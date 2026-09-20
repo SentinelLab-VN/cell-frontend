@@ -1,0 +1,115 @@
+/* Cell Protocol — shadcn/ui theme (dark only).
+ *
+ * Generated from design/cell-app.pen. shadcn's `--accent` is the hover/muted
+ * surface, NOT a brand colour, so Cell's lime lives on `--primary` and the
+ * shadcn `--accent` stays a neutral grey. Do not swap them.
+ */
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root,
+.dark {
+  --radius: 0.625rem;
+
+  --background: #0A0B0D;
+  --foreground: #EDEFF2;
+
+  --card: #121418;
+  --card-foreground: #EDEFF2;
+  --popover: #1A1D23;
+  --popover-foreground: #EDEFF2;
+
+  /* Cell lime. Foreground is near-black: never white on this. */
+  --primary: #C8F94E;
+  --primary-foreground: #0A0B0D;
+
+  --secondary: #1A1D23;
+  --secondary-foreground: #EDEFF2;
+
+  --muted: #1A1D23;
+  --muted-foreground: #858C99;
+
+  --accent: #1A1D23;
+  --accent-foreground: #EDEFF2;
+
+  --destructive: #F87171;
+  --destructive-foreground: #0A0B0D;
+
+  --border: #252932;
+  --input: #252932;
+  --ring: #C8F94E;
+
+  /* Not in shadcn's set — Cell adds these. */
+  --success: #4ADE80;
+  --warning: #FBBF24;
+  --info: #60A5FA;
+  --dim: #5A606C;
+  --border-strong: #343943;
+  --primary-subtle: #2E3A16;
+
+  --chart-1: #C8F94E;
+  --chart-2: #60A5FA;
+  --chart-3: #4ADE80;
+  --chart-4: #FBBF24;
+  --chart-5: #F87171;
+
+  --sidebar: #121418;
+  --sidebar-foreground: #EDEFF2;
+  --sidebar-primary: #C8F94E;
+  --sidebar-primary-foreground: #0A0B0D;
+  --sidebar-accent: #2E3A16;
+  --sidebar-accent-foreground: #C8F94E;
+  --sidebar-border: #252932;
+  --sidebar-ring: #C8F94E;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --color-dim: var(--dim);
+  --color-border-strong: var(--border-strong);
+  --color-primary-subtle: var(--primary-subtle);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground; }
+  /* Every amount, address, hash and nonce is mono and tabular. */
+  .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+}
