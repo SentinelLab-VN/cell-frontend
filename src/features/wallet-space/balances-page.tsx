@@ -7,6 +7,7 @@ import { AmountText } from "@/components/ui/text";
 import { useBalances, useChannels } from "@/features/tenant/queries";
 import { useCurrentTenant } from "@/features/tenant/tenant-context";
 import type { BalanceRow, Channel } from "@/lib/api/types";
+import { GettingStarted } from "@/features/onboarding/getting-started";
 import { shortAddress } from "@/lib/format";
 
 export function BalancesPage() {
@@ -31,6 +32,8 @@ export function BalancesPage() {
         </>
       }
     >
+      <GettingStarted />
+
       <div className="mb-4 flex items-baseline justify-between">
         <h2 className="text-sm font-semibold text-foreground">Assets</h2>
         <p className="text-xs text-dim">Each asset is its own channel</p>

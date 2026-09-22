@@ -10,6 +10,7 @@ import { ErrorState } from "@/components/ui/states";
 import { signIn } from "@/features/session/sign-in";
 import { useSession } from "@/features/session/use-session";
 import { DEV_WALLET_ENABLED, devWallet, walletProviders, type WalletProvider } from "@/lib/wallet";
+import { HowItWorks } from "./how-it-works";
 
 const NEXT_STEPS = [
   "Server returns a one-time challenge nonce",
@@ -38,7 +39,7 @@ export function ConnectPage() {
       <TopBar right={<span className="num text-xs text-dim">Testnet</span>} />
 
       <div className="grid flex-1 lg:grid-cols-[57%_43%]">
-        <section className="flex flex-col justify-center border-border px-8 py-16 lg:border-r lg:px-24">
+        <section className="flex flex-col justify-center border-border px-8 py-16 lg:border-r lg:px-20">
           <p className="num text-xs tracking-[0.25em] text-primary uppercase">Cell</p>
           <h1 className="mt-5 max-w-lg text-[44px] leading-[1.15] font-semibold tracking-tight text-foreground">
             Instant transfers, backed on Stellar.
@@ -47,10 +48,12 @@ export function ConnectPage() {
             Your balance is held in an on-chain escrow you can verify. Transfers inside the channel settle instantly
             and never appear on mainnet.
           </p>
+
+          <HowItWorks />
         </section>
 
-        <section className="flex items-center justify-center px-8 py-16">
-          <Card className="w-full max-w-[460px] p-7">
+        <section className="px-8 py-16">
+          <Card className="sticky top-16 mx-auto w-full max-w-[460px] p-7">
             <h2 className="text-xl font-semibold text-foreground">Connect your wallet</h2>
             <p className="mt-3 text-[13px] text-muted-foreground">
               No email, no password. Your Stellar key is your account.
