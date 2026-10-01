@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Pill } from "@/components/ui/pill";
 import { EmptyState, ErrorState, Skeleton } from "@/components/ui/states";
 import { AmountText } from "@/components/ui/text";
+import { GettingStarted } from "@/features/onboarding/getting-started";
 import { useBalances, useChannels } from "@/features/tenant/queries";
 import { useCurrentTenant } from "@/features/tenant/tenant-context";
 import type { BalanceRow, Channel } from "@/lib/api/types";
@@ -31,6 +32,8 @@ export function BalancesPage() {
         </>
       }
     >
+      <GettingStarted />
+
       <div className="mb-4 flex items-baseline justify-between">
         <h2 className="text-sm font-semibold text-foreground">Assets</h2>
         <p className="text-xs text-dim">Each asset is its own channel</p>

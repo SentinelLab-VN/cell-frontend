@@ -18,37 +18,37 @@
   --background: #0A0B0D;
   --foreground: #EDEFF2;
 
-  --card: #121418;
+  --card: #191D24;
   --card-foreground: #EDEFF2;
-  --popover: #1A1D23;
+  --popover: #23272F;
   --popover-foreground: #EDEFF2;
 
   /* Cell lime. Foreground is near-black: never white on this. */
   --primary: #C8F94E;
   --primary-foreground: #0A0B0D;
 
-  --secondary: #1A1D23;
+  --secondary: #23272F;
   --secondary-foreground: #EDEFF2;
 
-  --muted: #1A1D23;
-  --muted-foreground: #858C99;
+  --muted: #23272F;
+  --muted-foreground: #9AA3B2;
 
-  --accent: #1A1D23;
+  --accent: #23272F;
   --accent-foreground: #EDEFF2;
 
   --destructive: #F87171;
   --destructive-foreground: #0A0B0D;
 
-  --border: #252932;
-  --input: #252932;
+  --border: #333A45;
+  --input: #6B717C;
   --ring: #C8F94E;
 
   /* Not in shadcn's set — Cell adds these. */
   --success: #4ADE80;
   --warning: #FBBF24;
   --info: #60A5FA;
-  --dim: #5A606C;
-  --border-strong: #343943;
+  --dim: #7B8493;
+  --border-strong: #6B717C;
   --primary-subtle: #2E3A16;
 
   --chart-1: #C8F94E;
@@ -57,13 +57,13 @@
   --chart-4: #FBBF24;
   --chart-5: #F87171;
 
-  --sidebar: #121418;
+  --sidebar: #191D24;
   --sidebar-foreground: #EDEFF2;
   --sidebar-primary: #C8F94E;
   --sidebar-primary-foreground: #0A0B0D;
   --sidebar-accent: #2E3A16;
   --sidebar-accent-foreground: #C8F94E;
-  --sidebar-border: #252932;
+  --sidebar-border: #333A45;
   --sidebar-ring: #C8F94E;
 }
 

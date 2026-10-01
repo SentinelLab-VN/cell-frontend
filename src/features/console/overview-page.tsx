@@ -5,6 +5,8 @@ import { Note } from "@/components/ui/note";
 import { Pill } from "@/components/ui/pill";
 import { ErrorState, Skeleton } from "@/components/ui/states";
 import { AmountText } from "@/components/ui/text";
+import { hasAnyDeposit } from "@/features/onboarding/helpers";
+import { OperatorNextSteps } from "@/features/onboarding/operator-next-steps";
 import { useCurrentTenant } from "@/features/tenant/tenant-context";
 import type { ChannelOverview } from "@/lib/api/types";
 import { useOverview } from "./queries";
@@ -21,6 +23,8 @@ export function OverviewPage() {
   return (
     <Page title="Overview" subtitle="What the escrow holds, and what is waiting on you">
       <div className="space-y-6">
+        <OperatorNextSteps hasDeposits={hasAnyDeposit(channels)} />
+
         {releaseWorkerHalted && (
           <Note tone="danger" label="Payouts are halted">
             A release could not be settled and the worker stopped rather than guess. Nothing is lost; approved

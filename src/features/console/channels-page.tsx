@@ -12,6 +12,7 @@ import { useCurrentTenant } from "@/features/tenant/tenant-context";
 import { channelsApi } from "@/lib/api/channels";
 import type { Channel } from "@/lib/api/types";
 import { useQuery } from "@tanstack/react-query";
+import { CapDialog } from "./dialogs/cap-dialog";
 import { GatesDialog } from "./dialogs/gates-dialog";
 import { OpenAssetDialog } from "./dialogs/open-asset-dialog";
 
@@ -25,6 +26,7 @@ export function ChannelsPage() {
   });
   const [opening, setOpening] = useState(false);
   const [gatesFor, setGatesFor] = useState<Channel | null>(null);
+  const [capFor, setCapFor] = useState<Channel | null>(null);
 
   return (
     <Page
@@ -66,9 +68,14 @@ export function ChannelsPage() {
               <KeyValue label="Withdrawals" mono={false}>{channel.withdrawalsBlocked ? "Paused" : "Open"}</KeyValue>
             </KeyValueList>
             {isAdmin && channel.status !== "provisioning" && (
-              <Button variant="outline" size="sm" className="mt-5" onClick={() => setGatesFor(channel)}>
-                Pause or resume
-              </Button>
+              <div className="mt-5 flex gap-2">
+                <Button variant="outline" size="sm" onClick={() => setGatesFor(channel)}>
+                  Pause or resume
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => setCapFor(channel)}>
+                  Change payout limit
+                </Button>
+              </div>
             )}
           </Card>
         ))}
@@ -76,6 +83,7 @@ export function ChannelsPage() {
 
       <OpenAssetDialog tenantId={tenant.id} open={opening} onOpenChange={setOpening} />
       {gatesFor && <GatesDialog tenantId={tenant.id} channel={gatesFor} onClose={() => setGatesFor(null)} />}
+      {capFor && <CapDialog tenantId={tenant.id} channel={capFor} onClose={() => setCapFor(null)} />}
     </Page>
   );
 }

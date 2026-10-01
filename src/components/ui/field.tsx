@@ -21,7 +21,7 @@ export function Input({ trailing, big = false, className, ...props }: InputProps
   return (
     <span
       className={cn(
-        "flex items-center gap-3 rounded-[10px] border border-border bg-background px-3.5",
+        "flex items-center gap-3 rounded-[10px] border border-input bg-background px-3.5",
         "focus-within:border-border-strong focus-within:ring-2 focus-within:ring-ring/30",
         big ? "h-[62px]" : "h-[46px]",
       )}

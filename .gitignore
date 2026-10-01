@@ -24,6 +24,8 @@ dist-ssr
 *.sw?
 
 .env
-.env.local
 test-results
 playwright-report
+.vercel
+.env*
+!.env.example

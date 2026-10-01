@@ -19,6 +19,8 @@ import { WithdrawPage } from "@/features/wallet-space/withdraw-page";
 
 export const router = createBrowserRouter([
   { path: "/", element: <ConnectPage /> },
+  { path: "/start/operator", element: <ConnectPage role="operator" /> },
+  { path: "/start/member", element: <ConnectPage role="member" /> },
   {
     element: <RequireSession />,
     children: [
