@@ -59,9 +59,14 @@ export function WithdrawPage() {
     mutationFn: async () => {
       const channelId = selected!.channelId;
       const previous = signed.current;
-      if (previous && previous.channelId === channelId && previous.to === to && previous.amount === amount) {
-        return moneyApi.requestWithdrawal(tenant.id, channelId, previous.body);
-      }
+      const reusable =
+        previous &&
+        previous.channelId === channelId &&
+        previous.to === to &&
+        previous.amount === amount &&
+        new Date(previous.body.expiresAt).getTime() > Date.now();
+      if (reusable) return moneyApi.requestWithdrawal(tenant.id, channelId, previous.body);
+      signed.current = null;
 
       const ctx = context.data ?? (await moneyApi.withdrawalContext(tenant.id, channelId));
       if (ctx.withdrawalsBlocked) throw new Error("Withdrawals from this asset are paused.");
