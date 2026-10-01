@@ -75,7 +75,7 @@ export function OperatorNextSteps({ hasDeposits }: { hasDeposits: boolean }) {
               navigator.clipboard
                 .writeText(userLink)
                 .then(() => toast.success("Link copied"))
-                .catch(() => toast.error("Could not copy — the link is on the Accounts screen"));
+                .catch(() => toast.error(`Could not copy. The link is ${userLink}`));
             }}
           >
             <Copy className="size-4" aria-hidden /> Copy link

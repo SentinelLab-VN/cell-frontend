@@ -44,8 +44,8 @@ export function StepLive({ tenant }: { tenant: Tenant }) {
       </Card>
 
       <Note tone="info" label="Nobody can be paid yet">
-        Your users hold nothing until someone deposits. Send them your escrow address, or deposit yourself and transfer
-        it on — that first transfer is what creates their account.
+        Your users hold nothing until someone deposits. Open the console and copy the tenant link for them — anyone who
+        opens it can deposit. Or deposit yourself and transfer it on; that first transfer is what creates their account.
       </Note>
     </>
   );

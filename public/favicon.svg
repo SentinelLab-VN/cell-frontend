@@ -1,1 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#C8F94E"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="lime" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#D6FF62"/>
+      <stop offset="1" stop-color="#9FC22F"/>
+    </linearGradient>
+  </defs>
+  <!-- hexagonal C, open to the right; the two ends darken along the same stroke -->
+  <path d="M84.6 30 L50 10 L15.4 30 L15.4 70 L50 90 L84.6 70" fill="none" stroke="url(#lime)" stroke-width="11" stroke-linejoin="round"/>
+  <path d="M84.6 30 L69 21" fill="none" stroke="#2C3036" stroke-width="11"/>
+  <path d="M84.6 70 L69 79" fill="none" stroke="#2C3036" stroke-width="11"/>
+  <!-- two bars in perspective -->
+  <polygon points="32,38.5 40.5,36.5 40.5,63.5 32,61.5" fill="url(#lime)"/>
+  <polygon points="44,32.5 55,29 55,71 44,67.5" fill="url(#lime)"/>
+</svg>
