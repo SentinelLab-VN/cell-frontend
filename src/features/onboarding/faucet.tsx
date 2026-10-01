@@ -3,16 +3,10 @@ import { ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
-/** Stellar's testnet faucet. It funds an account in one ledger, for free. */
 const FRIENDBOT = "https://friendbot.stellar.org";
-const LAB_FUND = "https://lab.stellar.org/account/fund";
-/**
- * Funds the connected wallet from the testnet faucet.
- *
- * A wallet with no XLM cannot pay a transaction fee, so nothing in Cell works
- * until this has been done once — and nothing on the screen says so unless we
- * do. Off testnet there is no faucet and the button is not rendered.
- */
+export const LAB_FUND = "https://lab.stellar.org/account/fund";
+
+/** Funds the wallet from the testnet faucet: without XLM it cannot pay a single fee. */
 export function FaucetButton({ address, size = "md" }: { address: string; size?: "sm" | "md" | "lg" }) {
   const fund = useMutation({
     mutationFn: async () => {

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Field, Input, ReadOnlyBox } from "@/components/ui/field";
 import { ErrorState } from "@/components/ui/states";
+import { LAB_FUND } from "@/features/onboarding/faucet";
 import { signIn } from "@/features/session/sign-in";
 import { useSession } from "@/features/session/use-session";
 import { DEV_WALLET_ENABLED, devWallet, walletProviders, type WalletProvider } from "@/lib/wallet";
@@ -140,7 +141,7 @@ export function ConnectPage({ role }: { role?: Role }) {
             <p className="mt-5 text-[13px] text-dim">
               Signing in costs nothing. Transactions need a few test XLM from{" "}
               <a
-                href="https://lab.stellar.org/account/fund"
+                href={LAB_FUND}
                 target="_blank"
                 rel="noreferrer"
                 className="text-primary underline-offset-4 hover:underline"

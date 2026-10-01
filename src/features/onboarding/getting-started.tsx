@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Check, X } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -10,7 +10,7 @@ import { useCurrentTenant } from "@/features/tenant/tenant-context";
 import { moneyApi } from "@/lib/api/money";
 import { cn } from "@/lib/cn";
 import { FaucetButton } from "./faucet";
-import { useIsTestnet } from "./helpers";
+import { useDismissed, useIsTestnet } from "./helpers";
 
 interface Step {
   title: string;
@@ -20,25 +20,14 @@ interface Step {
 }
 
 /**
- * The four things a newcomer has to do, in order, with the one they are on
- * highlighted and the ones they have finished ticked off.
- *
- * Each step reads its own state from the data, so it ticks itself a few
- * seconds after the money moves rather than when a button was pressed. The
- * card disappears for good once all four are done.
+ * A newcomer's four steps. Each one is ticked from the tenant's data, not from
+ * a button press, so it updates once the money has actually moved.
  */
 export function GettingStarted() {
   const tenant = useCurrentTenant();
   const session = useSession();
   const testnet = useIsTestnet();
-  const storageKey = `cell:guide-dismissed:${tenant.id}`;
-  const [dismissed, setDismissed] = useState(() => {
-    try {
-      return localStorage.getItem(storageKey) === "1";
-    } catch {
-      return false;
-    }
-  });
+  const [dismissed, dismiss] = useDismissed(`cell:guide-dismissed:${tenant.id}`);
 
   const balances = useBalances(tenant.id, true);
   const activity = useQuery({
@@ -85,14 +74,6 @@ export function GettingStarted() {
   if (dismissed || finished === steps.length || !testnet) return null;
 
   const current = steps.findIndex((s) => !s.done);
-  const dismiss = () => {
-    try {
-      localStorage.setItem(storageKey, "1");
-    } catch {
-      // A browser that refuses storage just sees the card again next time.
-    }
-    setDismissed(true);
-  };
 
   return (
     <Card className="mb-6 animate-in fade-in slide-in-from-bottom-2 duration-500">

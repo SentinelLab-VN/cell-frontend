@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Pill } from "@/components/ui/pill";
 import { EmptyState, ErrorState, Skeleton } from "@/components/ui/states";
 import { AmountText } from "@/components/ui/text";
+import { GettingStarted } from "@/features/onboarding/getting-started";
 import { useBalances, useChannels } from "@/features/tenant/queries";
 import { useCurrentTenant } from "@/features/tenant/tenant-context";
 import type { BalanceRow, Channel } from "@/lib/api/types";
-import { GettingStarted } from "@/features/onboarding/getting-started";
 import { shortAddress } from "@/lib/format";
 
 export function BalancesPage() {

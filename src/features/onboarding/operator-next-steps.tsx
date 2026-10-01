@@ -1,43 +1,22 @@
 import { Copy, X } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useBalances } from "@/features/tenant/queries";
 import { useCurrentTenant } from "@/features/tenant/tenant-context";
-import { cn } from "@/lib/cn";
+import { useDismissed } from "./helpers";
 
-/**
- * What an operator does once the escrow is live — the questions the wizard
- * leaves unanswered: where do users come in, who may hold money here, and
- * what stops one signature from moving everything.
- *
- * Dismissed for good per tenant; the escrow itself is already working.
- */
+/** What an operator should set up between the escrow going live and the first deposit. */
 export function OperatorNextSteps({ hasDeposits }: { hasDeposits: boolean }) {
   const tenant = useCurrentTenant();
   const balances = useBalances(tenant.id);
-  const storageKey = `cell:operator-guide-dismissed:${tenant.id}`;
-  const [dismissed, setDismissed] = useState(() => {
-    try {
-      return localStorage.getItem(storageKey) === "1";
-    } catch {
-      return false;
-    }
-  });
+  const [dismissed, dismiss] = useDismissed(`cell:operator-guide-dismissed:${tenant.id}`);
 
   if (dismissed || tenant.status !== "active" || hasDeposits) return null;
 
   const userLink = `${window.location.origin}/t/${tenant.id}`;
-  const dismiss = () => {
-    try {
-      localStorage.setItem(storageKey, "1");
-    } catch {
-      // Ignored: the card simply comes back next time.
-    }
-    setDismissed(true);
-  };
 
   return (
     <Card className="animate-in fade-in slide-in-from-bottom-2 duration-500">
@@ -117,7 +96,7 @@ export function OperatorNextSteps({ hasDeposits }: { hasDeposits: boolean }) {
 
 function Step({ n, title, body, children }: { n: number; title: string; body: string; children: ReactNode }) {
   return (
-    <li className={cn("flex flex-wrap items-center gap-x-4 gap-y-3 rounded-xl border border-border bg-background px-4 py-3.5")}>
+    <li className="flex flex-wrap items-center gap-x-4 gap-y-3 rounded-xl border border-border bg-background px-4 py-3.5">
       <span className="num flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary text-[12px] text-muted-foreground">
         {n}
       </span>
@@ -129,4 +108,3 @@ function Step({ n, title, body, children }: { n: number; title: string; body: st
     </li>
   );
 }
-
