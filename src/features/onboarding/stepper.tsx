@@ -26,7 +26,7 @@ export function Stepper({ current }: { current: StepId | "live" }) {
                 state === "upcoming" && "bg-secondary text-dim",
               )}
             >
-              {state === "done" ? <Check className="size-3.5" strokeWidth={3} /> : index + 1}
+              {state === "done" ? <Check className="size-[13px]" strokeWidth={3} aria-hidden /> : index + 1}
             </span>
             <span>
               <span className={cn("block text-sm font-medium", state === "upcoming" ? "text-muted-foreground" : "text-foreground")}>

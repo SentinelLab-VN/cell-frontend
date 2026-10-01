@@ -2,6 +2,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
+import { ToggleRow } from "@/components/ui/switch";
 import { ErrorState } from "@/components/ui/states";
 import { useSubmitTx } from "@/features/chain/use-submit-tx";
 import { channelsApi } from "@/lib/api/channels";
@@ -35,6 +36,7 @@ export function GatesDialog({ tenantId, channel, onClose }: Props) {
     <Dialog
       open
       onOpenChange={(open) => !open && onClose()}
+      width={480}
       title={`Pause or resume ${channel.assetCode}`}
       description="The escrow itself enforces this. Balances and transfers inside the channel are not affected."
       footer={
@@ -44,23 +46,9 @@ export function GatesDialog({ tenantId, channel, onClose }: Props) {
         </>
       }
     >
-      <Toggle label="Pause deposits" checked={depositsBlocked} onChange={setDepositsBlocked} />
-      <Toggle label="Pause withdrawals" checked={withdrawalsBlocked} onChange={setWithdrawalsBlocked} />
+      <ToggleRow label="Pause deposits" checked={depositsBlocked} onChange={setDepositsBlocked} />
+      <ToggleRow label="Pause withdrawals" checked={withdrawalsBlocked} onChange={setWithdrawalsBlocked} />
       {save.isError && <ErrorState error={save.error} />}
     </Dialog>
-  );
-}
-
-function Toggle({ label, checked, onChange }: { label: string; checked: boolean; onChange: (next: boolean) => void }) {
-  return (
-    <label className="flex cursor-pointer items-center justify-between rounded-xl border border-border bg-secondary/50 px-4 py-3">
-      <span className="text-sm text-foreground">{label}</span>
-      <input
-        type="checkbox"
-        className="size-4 accent-[var(--primary)]"
-        checked={checked}
-        onChange={(event) => onChange(event.target.checked)}
-      />
-    </label>
   );
 }

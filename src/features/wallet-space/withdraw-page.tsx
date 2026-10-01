@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Page } from "@/components/layout/page";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Field, Input, ReadOnlyBox } from "@/components/ui/field";
+import { Field, Input, ReadOnlyAction, ReadOnlyBox } from "@/components/ui/field";
 import { Note } from "@/components/ui/note";
 import { EmptyState, ErrorState } from "@/components/ui/states";
 import { useRequiredSession } from "@/features/session/use-session";
@@ -83,11 +83,11 @@ export function WithdrawPage() {
 
   return (
     <Page title="Withdraw" subtitle="Move value out of the channel, back to Stellar">
-      <div className="grid gap-6 xl:grid-cols-[1.75fr_1fr]">
+      <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-[1.75fr_1fr]">
         <div className="space-y-4">
           <Card>
             <form
-              className="space-y-4"
+              className="flex flex-col gap-4"
               onSubmit={(event) => {
                 event.preventDefault();
                 request.mutate();
@@ -100,7 +100,7 @@ export function WithdrawPage() {
               )}
               <Field label="Amount">
                 <Input
-                  big
+                  size="big"
                   name="amount"
                   inputMode="decimal"
                   placeholder="0.00"
@@ -108,7 +108,7 @@ export function WithdrawPage() {
                     selected && (
                       <button
                         type="button"
-                        className="hover:text-foreground"
+                        className="cursor-pointer"
                         onClick={() => setAmountText(formatAmount(selected.amount, selected.decimals).replace(/,/g, ""))}
                       >
                         {selected.assetCode} · max {formatAmount(selected.amount, selected.decimals)}
@@ -123,9 +123,7 @@ export function WithdrawPage() {
                 {destination === null ? (
                   <ReadOnlyBox
                     trailing={
-                      <button type="button" className="uppercase hover:text-foreground" onClick={() => setDestination("")}>
-                        Change
-                      </button>
+                      <ReadOnlyAction onClick={() => setDestination("")}>Change</ReadOnlyAction>
                     }
                   >
                     {shortAddress(session.address)} (your wallet)
@@ -150,6 +148,7 @@ export function WithdrawPage() {
                 type="submit"
                 size="lg"
                 block
+                className="mt-auto"
                 loading={request.isPending}
                 disabled={!affordable || !isStellarAddress(to)}
               >

@@ -79,8 +79,8 @@ export function GettingStarted() {
     <Card className="mb-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-[15px] font-semibold text-foreground">Getting started</h2>
-          <p className="mt-1 text-[13px] text-muted-foreground">
+          <h2 className="text-[17px] font-semibold text-foreground">Getting started</h2>
+          <p className="mt-1 text-[15px] text-muted-foreground">
             Four steps, in order. They tick themselves as the money moves.
           </p>
         </div>
@@ -100,7 +100,7 @@ export function GettingStarted() {
           style={{ width: `${(finished / steps.length) * 100}%` }}
         />
       </div>
-      <p className="num mt-2 text-[11px] text-dim">
+      <p className="num mt-2 text-[13px] text-dim">
         {finished} of {steps.length} done
       </p>
 
@@ -132,7 +132,7 @@ export function GettingStarted() {
               <p className={cn("text-sm font-medium", step.done ? "text-muted-foreground line-through" : "text-foreground")}>
                 {step.title}
               </p>
-              <p className="mt-0.5 text-[13px] leading-relaxed text-muted-foreground">{step.body}</p>
+              <p className="mt-0.5 text-[15px] leading-relaxed text-muted-foreground">{step.body}</p>
             </div>
             {!step.done && index === current && <div className="ml-auto">{step.action}</div>}
           </li>

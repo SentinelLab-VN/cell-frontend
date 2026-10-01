@@ -44,7 +44,7 @@ function LoadFailed({ error }: { error: unknown }) {
       ) : status === 404 ? (
         <EmptyState title="This tenant doesn't exist">Check the link you were given.</EmptyState>
       ) : (
-        <ErrorState error={error} />
+        <ErrorState error={error} title="Could not load this tenant" />
       )}
       <Link to="/home">
         <Button variant="outline">Back to your tenants</Button>

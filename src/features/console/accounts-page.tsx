@@ -1,12 +1,13 @@
 import { useMutation } from "@tanstack/react-query";
-import { UserPlus } from "lucide-react";
+import { UserPlus, Users } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Page } from "@/components/layout/page";
 import { Button } from "@/components/ui/button";
 import { Pill, type Tone } from "@/components/ui/pill";
 import { EmptyState, ErrorState, Skeleton } from "@/components/ui/states";
-import { AddressText } from "@/components/ui/text";
+import { TableWrap, Td, Th, THead, Tr } from "@/components/ui/table";
+import { AddressText, CopyButton } from "@/components/ui/text";
 import { errorMessage } from "@/lib/error-message";
 import { useCurrentTenant } from "@/features/tenant/tenant-context";
 import { operatorApi } from "@/lib/api/operator";
@@ -46,57 +47,60 @@ export function AccountsPage() {
         <>
           <PolicySelect tenant={tenant} />
           <Button size="sm" onClick={() => setInviting(true)}>
-            <UserPlus className="size-4" aria-hidden /> Add an address
+            <UserPlus className="size-[15px]" aria-hidden /> Add an address
           </Button>
         </>
       }
     >
-      {members.isPending && <Skeleton className="h-48" />}
+      {members.isPending && <Skeleton className="h-64 rounded-2xl" />}
       {members.isError && <ErrorState error={members.error} />}
-      {members.data?.length === 0 && <EmptyState title="No members yet" />}
+      {members.data?.length === 0 && <EmptyState icon={<Users className="size-5" aria-hidden />} title="No members yet" />}
 
       {!!members.data?.length && (
-        <div className="overflow-hidden rounded-2xl border border-border bg-card">
-          <table className="w-full text-left">
-            <thead className="bg-secondary/60">
-              <tr className="num text-[10px] tracking-[0.2em] text-dim uppercase">
-                <th className="px-5 py-3 font-medium">Address</th>
-                <th className="px-5 py-3 font-medium">Status</th>
-                <th className="px-5 py-3 text-right font-medium">Last seen</th>
-                <th className="px-5 py-3" />
-              </tr>
-            </thead>
-            <tbody>
-              {members.data.map((member) => (
-                <tr key={member.address} className="border-t border-border text-sm">
-                  <td className="px-5 py-3.5"><AddressText address={member.address} /></td>
-                  <td className="px-5 py-3.5">
-                    {member.status === "pending" ? (
-                      <Pill tone="warn">Waiting for approval</Pill>
-                    ) : (
-                      <Pill tone={LABEL[member.label].tone}>{LABEL[member.label].text}</Pill>
-                    )}
-                  </td>
-                  <td className="px-5 py-3.5 text-right text-[13px] text-muted-foreground">{timeAgo(member.lastLoginAt)}</td>
-                  <td className="space-x-2 px-5 py-3.5 text-right">
-                    {member.status === "pending" && (
-                      <Button size="sm" variant="outline" onClick={() => change.mutate({ address: member.address, action: "approve" })}>
-                        Approve
-                      </Button>
-                    )}
-                    {member.status === "blocked" ? (
-                      <Button size="sm" variant="outline" onClick={() => change.mutate({ address: member.address, action: "unblock" })}>
-                        Unblock
-                      </Button>
-                    ) : (
-                      <Button size="sm" variant="danger" onClick={() => setBlocking(member)}>Block</Button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <TableWrap>
+          <THead>
+            <tr>
+              <Th>Address</Th>
+              <Th>Status</Th>
+              <Th className="text-right">Last seen</Th>
+              <Th />
+            </tr>
+          </THead>
+          <tbody>
+            {members.data.map((member) => (
+              <Tr key={member.address}>
+                <Td>
+                  <span className="inline-flex items-center gap-1.5">
+                    <AddressText address={member.address} className="text-[15px]" />
+                    <CopyButton value={member.address} />
+                  </span>
+                </Td>
+                <Td>
+                  {member.status === "pending" ? (
+                    <Pill tone="warn">Waiting for approval</Pill>
+                  ) : (
+                    <Pill tone={LABEL[member.label].tone}>{LABEL[member.label].text}</Pill>
+                  )}
+                </Td>
+                <Td className="text-right text-[15px] text-muted-foreground">{timeAgo(member.lastLoginAt)}</Td>
+                <Td className="space-x-2 text-right">
+                  {member.status === "pending" && (
+                    <Button size="sm" variant="outline" onClick={() => change.mutate({ address: member.address, action: "approve" })}>
+                      Approve
+                    </Button>
+                  )}
+                  {member.status === "blocked" ? (
+                    <Button size="sm" variant="outline" onClick={() => change.mutate({ address: member.address, action: "unblock" })}>
+                      Unblock
+                    </Button>
+                  ) : (
+                    <Button size="sm" variant="danger" onClick={() => setBlocking(member)}>Block</Button>
+                  )}
+                </Td>
+              </Tr>
+            ))}
+          </tbody>
+        </TableWrap>
       )}
 
       <InviteDialog tenantId={tenant.id} open={inviting} onOpenChange={setInviting} />

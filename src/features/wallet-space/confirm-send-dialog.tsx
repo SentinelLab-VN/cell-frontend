@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
@@ -76,14 +77,19 @@ export function ConfirmSendDialog({ open, onOpenChange, tenant, balance, to, amo
     <Dialog
       open={open}
       onOpenChange={onOpenChange}
-      title={`Send ${shown}?`}
+      width={520}
+      title={
+        <>
+          Send <span className="num">{shown}</span>?
+        </>
+      }
       description="Instant and final. There is no pending state and no way to recall it."
       footer={
         <>
-          <Button variant="outline" size="lg" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" className="h-11" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button size="lg" loading={send.isPending} disabled={!message || !!refused} onClick={() => send.mutate()}>
+          <Button className="h-11" loading={send.isPending} disabled={!message || !!refused} onClick={() => send.mutate()}>
             Sign & send
           </Button>
         </>
@@ -91,13 +97,16 @@ export function ConfirmSendDialog({ open, onOpenChange, tenant, balance, to, amo
     >
       <KeyValueList>
         <KeyValue label="To">{shortAddress(to)}</KeyValue>
-        <KeyValue label="They are" mono>
+        <KeyValue label="They are" mono={false}>
           {refused ? (
             <span className="text-destructive">{recipient.reason ?? "Cannot receive here"}</span>
           ) : recipient?.known ? (
             <span className="text-success">A member of {tenant.name}</span>
           ) : (
-            <span className="text-warning">New here — this transfer creates their account</span>
+            <span className="inline-flex items-start gap-1.5 text-warning">
+              <UserPlus className="mt-0.5 size-[13px] shrink-0" aria-hidden />
+              New here — this transfer creates their account
+            </span>
           )}
         </KeyValue>
         <KeyValue label="Fee" mono={false}>
@@ -108,9 +117,9 @@ export function ConfirmSendDialog({ open, onOpenChange, tenant, balance, to, amo
         </KeyValue>
       </KeyValueList>
 
-      <div className="rounded-xl border border-border bg-background px-4 py-3.5">
-        <p className="num mb-1.5 text-[10px] tracking-[0.2em] text-info uppercase">What you are signing</p>
-        <p className="num text-xs leading-relaxed break-all text-muted-foreground">{message ?? "…"}</p>
+      <div className="rounded-xl border border-border bg-background px-3.5 py-3">
+        <p className="num mb-1.5 text-[12px] font-medium tracking-[0.2em] text-info uppercase">What you are signing</p>
+        <p className="num text-xs leading-[1.6] break-all text-muted-foreground">{message ?? "…"}</p>
         <p className="mt-2 text-xs text-dim">A message, not a Stellar transaction.</p>
       </div>
 

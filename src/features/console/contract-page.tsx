@@ -22,7 +22,7 @@ export function ContractPage() {
   const [removing, setRemoving] = useState<string | null>(null);
 
   if (contract.isError) return <Page title="Contract"><ErrorState error={contract.error} /></Page>;
-  if (!contract.data) return <Page title="Contract"><Skeleton className="h-64" /></Page>;
+  if (!contract.data) return <Page title="Contract"><ContractSkeleton /></Page>;
 
   const { escrowContractId, admin, operators, assets, tree, wasmHash, storageVersion } = contract.data;
 
@@ -31,12 +31,12 @@ export function ContractPage() {
       title="Contract"
       subtitle="The escrow on Stellar, as the chain reports it"
       actions={
-        <a className="text-[13px] text-info hover:underline" href={explorerContract(escrowContractId)} target="_blank" rel="noreferrer">
+        <a className="text-[15px] text-info hover:underline" href={explorerContract(escrowContractId)} target="_blank" rel="noreferrer">
           View on explorer ↗
         </a>
       }
     >
-      <div className="grid gap-4 xl:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardTitle>Escrow</CardTitle>
           <KeyValueList className="mt-5">
@@ -58,7 +58,7 @@ export function ContractPage() {
             </KeyValue>
             <KeyValue label="Fee balance">{formatXlm(tenant.operatorBalance)}</KeyValue>
           </KeyValueList>
-          <ul className="mt-5 space-y-2 border-t border-border pt-4">
+          <ul className="mt-4 space-y-2.5 border-t border-sidebar-border pt-4">
             {operators.map((operator) => (
               <li key={operator.address} className="flex items-center justify-between gap-3 text-sm">
                 <AddressText address={operator.address} />
@@ -89,7 +89,7 @@ export function ContractPage() {
           <ul className="mt-5 space-y-3">
             {assets.map((asset) => (
               <li key={asset.channelId} className="flex items-center justify-between text-sm">
-                <span className="font-medium text-foreground">{asset.assetCode}</span>
+                <span className="text-sm font-medium text-foreground">{asset.assetCode}</span>
                 <AmountText units={asset.onchainBalance ?? asset.totalLocked} decimals={7} code={asset.assetCode} />
               </li>
             ))}
@@ -108,5 +108,13 @@ export function ContractPage() {
       {toppingUp && <TopUpDialog tenant={tenant} onClose={() => setToppingUp(false)} />}
       {removing && <RemoveOperatorDialog tenant={tenant} operator={removing} onClose={() => setRemoving(null)} />}
     </Page>
+  );
+}
+
+function ContractSkeleton() {
+  return (
+    <div className="grid gap-4 md:grid-cols-2">
+      {[0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-[200px] rounded-2xl" />)}
+    </div>
   );
 }

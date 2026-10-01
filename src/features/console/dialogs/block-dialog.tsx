@@ -33,6 +33,7 @@ export function BlockDialog({ tenantId, member, onClose }: Props) {
     <Dialog
       open
       onOpenChange={(open) => !open && onClose()}
+      width={480}
       title={`Block ${shortAddress(member.address)}`}
       description="A blocked address cannot send, receive or withdraw. Its balance stays where it is, and unblocking restores everything."
       footer={

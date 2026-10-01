@@ -41,6 +41,7 @@ export function DecideDialog({ tenantId, row, asset, onClose }: Props) {
       open
       onOpenChange={(open) => !open && onClose()}
       title="Review withdrawal"
+      width={500}
       description="Approving debits the member now and pays them on Stellar. It cannot be undone once paid."
       footer={
         rejecting ? (

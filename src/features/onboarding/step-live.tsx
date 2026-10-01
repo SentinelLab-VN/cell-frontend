@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
@@ -17,7 +18,12 @@ export function StepLive({ tenant }: { tenant: Tenant }) {
   return (
     <>
       <Card>
-        <CardTitle>{tenant.name} is live</CardTitle>
+        <div className="flex items-center gap-3">
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-success-subtle text-success">
+            <Check className="size-4" strokeWidth={3} aria-hidden />
+          </span>
+          <CardTitle className="text-lg">{tenant.name} is live</CardTitle>
+        </div>
         <KeyValueList className="mt-5">
           <KeyValue label="Escrow">{shortAddress(tenant.escrowContractId)}</KeyValue>
           <KeyValue label="Network">{tenant.network}</KeyValue>

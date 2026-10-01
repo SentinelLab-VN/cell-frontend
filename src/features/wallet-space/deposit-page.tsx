@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Page } from "@/components/layout/page";
 import { Card, CardTitle } from "@/components/ui/card";
-import { Field, Input, ReadOnlyBox } from "@/components/ui/field";
+import { Field, Input, ReadOnlyAction, ReadOnlyBox } from "@/components/ui/field";
 import { Note } from "@/components/ui/note";
 import { Button } from "@/components/ui/button";
 import { EmptyState, ErrorState } from "@/components/ui/states";
@@ -13,6 +13,7 @@ import { useCurrentTenant } from "@/features/tenant/tenant-context";
 import { isPositive, parseAmount } from "@/lib/amount";
 import { moneyApi } from "@/lib/api/money";
 import { tenantsApi } from "@/lib/api/tenants";
+import { cn } from "@/lib/cn";
 import { isStellarAddress, shortAddress } from "@/lib/format";
 import { buildDeposit } from "@/lib/stellar/deposit";
 import { AssetSelect } from "./asset-select";
@@ -64,11 +65,11 @@ export function DepositPage() {
 
   return (
     <Page title="Deposit" subtitle="Move assets from your wallet into the channel">
-      <div className="grid gap-6 xl:grid-cols-[1.75fr_1fr]">
+      <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-[1.75fr_1fr]">
         <div className="space-y-4">
           <Card>
             <form
-              className="space-y-4"
+              className={cn("flex flex-col gap-4 [&_input]:transition-opacity", deposit.isPending && "[&_input]:opacity-60")}
               onSubmit={(event) => {
                 event.preventDefault();
                 deposit.mutate();
@@ -81,7 +82,7 @@ export function DepositPage() {
               )}
               <Field label="Amount">
                 <Input
-                  big
+                  size="big"
                   name="amount"
                   inputMode="decimal"
                   placeholder="0.00"
@@ -95,9 +96,7 @@ export function DepositPage() {
                 {creditTo === null ? (
                   <ReadOnlyBox
                     trailing={
-                      <button type="button" className="uppercase hover:text-foreground" onClick={() => setCreditTo("")}>
-                        Change
-                      </button>
+                      <ReadOnlyAction onClick={() => setCreditTo("")}>Change</ReadOnlyAction>
                     }
                   >
                     My account · {shortAddress(session.address)}
@@ -122,6 +121,7 @@ export function DepositPage() {
                 type="submit"
                 size="lg"
                 block
+                className="mt-auto"
                 loading={deposit.isPending}
                 disabled={!amount || !isPositive(amount) || !isStellarAddress(recipient)}
               >

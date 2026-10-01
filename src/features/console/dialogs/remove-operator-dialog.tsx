@@ -33,6 +33,7 @@ export function RemoveOperatorDialog({ tenant, operator, onClose }: Props) {
     <Dialog
       open
       onOpenChange={(open) => !open && onClose()}
+      width={480}
       title={`Remove ${shortAddress(operator)}`}
       description="The escrow stops accepting payouts signed by this key."
       footer={

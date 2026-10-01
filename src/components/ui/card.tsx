@@ -1,12 +1,26 @@
 import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
-export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("rounded-2xl border border-border bg-card p-6", className)} {...props} />;
+interface CardProps extends HTMLAttributes<HTMLDivElement> {
+  /** Cards that link somewhere or can be picked lift their border on hover. */
+  hover?: boolean;
+}
+
+export function Card({ className, hover = false, ...props }: CardProps) {
+  return (
+    <div
+      className={cn(
+        "rounded-2xl border border-border bg-card p-6 max-md:p-[18px]",
+        hover && "transition-colors hover:border-border-strong",
+        className,
+      )}
+      {...props}
+    />
+  );
 }
 
 export function CardTitle({ className, ...props }: HTMLAttributes<HTMLHeadingElement>) {
-  return <h2 className={cn("text-[15px] font-semibold text-foreground", className)} {...props} />;
+  return <h2 className={cn("text-sm font-semibold text-foreground", className)} {...props} />;
 }
 
 /** A row inside a card: the darker inset box the design uses for list items. */

@@ -37,9 +37,9 @@ export function WithdrawalProgress({ tenantId, withdrawals, balances }: Props) {
 
   if (!latest) {
     return (
-      <Card className="self-start">
+      <Card>
         <CardTitle>In progress</CardTitle>
-        <p className="mt-3 text-[13px] text-dim">No withdrawals yet.</p>
+        <p className="mt-3 text-[15px] text-dim">No withdrawals yet.</p>
       </Card>
     );
   }
@@ -48,10 +48,17 @@ export function WithdrawalProgress({ tenantId, withdrawals, balances }: Props) {
   const status = STATUS[latest.status];
 
   return (
-    <Card className="self-start">
+    <Card>
       <CardTitle>{latest.status === "released" ? "Latest withdrawal" : "In progress"}</CardTitle>
-      <div className="mt-3 mb-5 flex items-center justify-between">
-        <AmountText units={latest.amount} decimals={asset?.decimals ?? 7} code={asset?.assetCode} className="text-lg text-foreground" />
+      <div className="mt-3 mb-5 flex items-center justify-between gap-3">
+        <span>
+          <AmountText
+            units={latest.amount}
+            decimals={asset?.decimals ?? 7}
+            className="text-lg font-semibold text-foreground"
+          />
+          {asset?.assetCode && <span className="text-[15px] text-muted-foreground"> {asset.assetCode}</span>}
+        </span>
         <Pill tone={status.tone}>{status.label}</Pill>
       </div>
 
