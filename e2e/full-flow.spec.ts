@@ -67,6 +67,7 @@ test("a tenant goes from nothing to a paid-out withdrawal", async ({ browser }) 
     await admin.getByPlaceholder("0.00").fill("2");
     await admin.getByRole("button", { name: "Sign & send" }).click();
     await expect(admin.getByRole("dialog").getByText(/New here/)).toBeVisible();
+    await admin.getByRole("dialog").getByPlaceholder(`…${user.slice(-4)}`).fill(user.slice(-4));
     await admin.waitForTimeout(400);
     await shot(admin, "07-confirm-send");
     await admin.getByRole("dialog").getByRole("button", { name: "Sign & send" }).click();

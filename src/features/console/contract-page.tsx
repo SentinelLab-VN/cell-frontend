@@ -12,19 +12,27 @@ import { formatXlm, shortHash } from "@/lib/format";
 import { explorerContract } from "@/lib/stellar/network";
 import { RemoveOperatorDialog } from "./dialogs/remove-operator-dialog";
 import { TopUpDialog } from "./dialogs/top-up-dialog";
-import { useContract } from "./queries";
+import { ResumeWorkerDialog, RotateTreeDialog } from "./dialogs/worker-dialogs";
+import { useContract, useOverview } from "./queries";
 
 export function ContractPage() {
   const tenant = useCurrentTenant();
   const isAdmin = tenant.role === "admin";
   const contract = useContract(tenant.id);
+  const overview = useOverview(tenant.id);
   const [toppingUp, setToppingUp] = useState(false);
   const [removing, setRemoving] = useState<string | null>(null);
+  const [rotating, setRotating] = useState(false);
+  const [resuming, setResuming] = useState(false);
 
   if (contract.isError) return <Page title="Contract"><ErrorState error={contract.error} /></Page>;
   if (!contract.data) return <Page title="Contract"><Skeleton className="h-64" /></Page>;
 
-  const { escrowContractId, admin, operators, assets, tree, wasmHash, storageVersion } = contract.data;
+  const { escrowContractId, admin, operators, assets, tree, wasmHash, storageVersion, ourSigner, releaseSigner } = contract.data;
+  // The key we hold and the key the escrow authorised must be the same one;
+  // when they are not, every release would revert NotAuthorized.
+  const signerMismatch = !!ourSigner && releaseSigner !== ourSigner;
+  const halted = overview.data?.releaseWorkerHalted ?? false;
 
   return (
     <Page
@@ -75,12 +83,23 @@ export function ContractPage() {
         </Card>
 
         <Card>
-          <CardTitle>Payout proofs</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>Payout proofs</CardTitle>
+            <span className="flex gap-2">
+              {isAdmin && halted && (
+                <Button size="sm" onClick={() => setResuming(true)}>Resume payouts</Button>
+              )}
+              <Button size="sm" variant="outline" onClick={() => setRotating(true)}>New tree…</Button>
+            </span>
+          </div>
           <KeyValueList className="mt-5">
             <KeyValue label="Tree">#{tree.treeIndex}</KeyValue>
             <KeyValue label="Next withdrawal number">{tree.nextNonce}</KeyValue>
             <KeyValue label="Left before a new tree">{tree.noncesRemaining.toLocaleString()}</KeyValue>
             <KeyValue label="Root on chain">{shortHash(tree.confirmedRoot)}</KeyValue>
+            <KeyValue label="Payouts">
+              {halted ? <Pill tone="danger">Halted</Pill> : <Pill tone="ok">Running</Pill>}
+            </KeyValue>
           </KeyValueList>
         </Card>
 
@@ -97,6 +116,15 @@ export function ContractPage() {
         </Card>
       </div>
 
+      {signerMismatch && (
+        <div className="mt-4">
+          <Note tone="danger" label="The escrow has not authorised the key Cell pays out with">
+            Cell holds {shortHash(ourSigner!)}; the escrow's operator for payouts is {releaseSigner ? shortHash(releaseSigner) : "nobody"}.
+            Add Cell's key with add_operator, or payouts stay stopped.
+          </Note>
+        </div>
+      )}
+
       {!tenant.operatorFunded && (
         <div className="mt-4">
           <Note tone="danger" label="Payouts are paused: the operator account is out of fees">
@@ -107,6 +135,8 @@ export function ContractPage() {
 
       {toppingUp && <TopUpDialog tenant={tenant} onClose={() => setToppingUp(false)} />}
       {removing && <RemoveOperatorDialog tenant={tenant} operator={removing} onClose={() => setRemoving(null)} />}
+      {rotating && <RotateTreeDialog tenantId={tenant.id} onClose={() => setRotating(false)} />}
+      {resuming && <ResumeWorkerDialog tenantId={tenant.id} onClose={() => setResuming(false)} />}
     </Page>
   );
 }

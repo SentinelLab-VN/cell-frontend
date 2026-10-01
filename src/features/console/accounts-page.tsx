@@ -71,11 +71,7 @@ export function AccountsPage() {
                 <tr key={member.address} className="border-t border-border text-sm">
                   <td className="px-5 py-3.5"><AddressText address={member.address} /></td>
                   <td className="px-5 py-3.5">
-                    {member.status === "pending" ? (
-                      <Pill tone="warn">Waiting for approval</Pill>
-                    ) : (
-                      <Pill tone={LABEL[member.label].tone}>{LABEL[member.label].text}</Pill>
-                    )}
+                    <Pill tone={LABEL[member.label].tone}>{LABEL[member.label].text}</Pill>
                   </td>
                   <td className="px-5 py-3.5 text-right text-[13px] text-muted-foreground">{timeAgo(member.lastLoginAt)}</td>
                   <td className="space-x-2 px-5 py-3.5 text-right">

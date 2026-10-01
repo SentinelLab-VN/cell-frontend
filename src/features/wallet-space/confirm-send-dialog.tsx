@@ -1,7 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
+import { Field, Input } from "@/components/ui/field";
 import { KeyValue, KeyValueList } from "@/components/ui/key-value";
 import { ErrorState } from "@/components/ui/states";
 import { useRequiredSession } from "@/features/session/use-session";
@@ -23,10 +25,28 @@ interface ConfirmSendDialogProps {
   onSent: () => void;
 }
 
+const POLL_MS = 1000;
+// A transfer admitted just before its expiry can still commit one gateway
+// wait later.
+const PIPELINE_WAIT_MS = 2000;
+
+/** A 202 is "still committing", not a result. Past the expiry it never will. */
+async function awaitCommit(tenantId: string, id: string, expiresAt: string): Promise<void> {
+  const deadline = new Date(expiresAt).getTime() + PIPELINE_WAIT_MS;
+  while (Date.now() < deadline) {
+    if (await moneyApi.getTransfer(tenantId, id)) return;
+    await new Promise((resolve) => setTimeout(resolve, POLL_MS));
+  }
+  throw new Error("The transfer did not go through. Nothing was sent; you can try again.");
+}
+
 export function ConfirmSendDialog({ open, onOpenChange, tenant, balance, to, amount, onSent }: ConfirmSendDialogProps) {
   const session = useRequiredSession();
   const queryClient = useQueryClient();
   const shown = `${formatAmount(amount, balance.decimals)} ${balance.assetCode}`;
+  // A transfer to a mistyped address is final, so the sender proves they read it.
+  const [retyped, setRetyped] = useState("");
+  const confirmed = retyped.trim().toUpperCase() === to.slice(-4).toUpperCase();
 
   // The server picks the nonce and the expiry; both are part of what gets signed.
   const context = useQuery({
@@ -52,18 +72,20 @@ export function ConfirmSendDialog({ open, onOpenChange, tenant, balance, to, amo
     mutationFn: async () => {
       const wallet = await walletStore.require();
       const signature = await wallet.signMessage(message!);
-      return moneyApi.transfer(tenant.id, balance.channelId, {
+      const result = await moneyApi.transfer(tenant.id, balance.channelId, {
         to,
         amount,
         nonce: context.data!.nextNonce,
         expiresAt: context.data!.expiresAt,
         signature,
       });
+      if (result.kind === "pending") await awaitCommit(tenant.id, result.pending.id, context.data!.expiresAt);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tenant", tenant.id] });
       queryClient.invalidateQueries({ queryKey: keys.me });
       toast.success(`Sent ${shown} to ${shortAddress(to)}`);
+      setRetyped("");
       onOpenChange(false);
       onSent();
     },
@@ -75,7 +97,10 @@ export function ConfirmSendDialog({ open, onOpenChange, tenant, balance, to, amo
   return (
     <Dialog
       open={open}
-      onOpenChange={onOpenChange}
+      onOpenChange={(next) => {
+        if (!next) setRetyped("");
+        onOpenChange(next);
+      }}
       title={`Send ${shown}?`}
       description="Instant and final. There is no pending state and no way to recall it."
       footer={
@@ -83,7 +108,12 @@ export function ConfirmSendDialog({ open, onOpenChange, tenant, balance, to, amo
           <Button variant="outline" size="lg" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button size="lg" loading={send.isPending} disabled={!message || !!refused} onClick={() => send.mutate()}>
+          <Button
+            size="lg"
+            loading={send.isPending}
+            disabled={!message || !!refused || !confirmed}
+            onClick={() => send.mutate()}
+          >
             Sign & send
           </Button>
         </>
@@ -107,6 +137,18 @@ export function ConfirmSendDialog({ open, onOpenChange, tenant, balance, to, amo
           {formatAmount(subtract(balance.amount, amount), balance.decimals)} {balance.assetCode}
         </KeyValue>
       </KeyValueList>
+
+      <Field label="Retype the last four characters of the address" hint="Sent to the wrong address, it is gone.">
+        <Input
+          name="retype"
+          autoComplete="off"
+          spellCheck={false}
+          placeholder={`…${to.slice(-4)}`}
+          maxLength={4}
+          value={retyped}
+          onChange={(event) => setRetyped(event.target.value)}
+        />
+      </Field>
 
       <div className="rounded-xl border border-border bg-background px-4 py-3.5">
         <p className="num mb-1.5 text-[10px] tracking-[0.2em] text-info uppercase">What you are signing</p>
