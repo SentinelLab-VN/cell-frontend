@@ -7,6 +7,5 @@ export const authApi = {
 };
 
 export const referralApi = {
-  attribute: (address: string, code: string) =>
-    http.post<{ attributed: boolean }>("/api/referrals/attribute", { address, code }),
+  attribute: (code: string) => http.post<{ attributed: boolean }>("/api/referrals/attribute", { code }),
 };

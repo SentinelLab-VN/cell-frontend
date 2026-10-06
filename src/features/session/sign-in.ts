@@ -19,7 +19,7 @@ export async function signIn(wallet: Wallet, devSecret?: string) {
   const ref = pendingReferral();
   if (ref) {
     referralApi
-      .attribute(wallet.address, ref)
+      .attribute(ref)
       .then(clearReferral)
       .catch((error) => {
         if (error instanceof ApiError && error.status < 500) clearReferral();
