@@ -5,3 +5,8 @@ export const authApi = {
   verify: (address: string, nonce: string, signature: string) =>
     http.post<{ token: string }>("/auth/verify", { address, nonce, signature }),
 };
+
+export const referralApi = {
+  attribute: (address: string, code: string) =>
+    http.post<{ attributed: boolean }>("/api/referrals/attribute", { address, code }),
+};
