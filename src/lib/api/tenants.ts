@@ -35,6 +35,12 @@ export const tenantsApi = {
   setPolicy: (tenantId: string, membershipPolicy: MembershipPolicy) =>
     http.patch<Tenant>(`/api/tenants/${tenantId}`, { membershipPolicy }),
 
+  /** D2. Queued: the indexer rotates once nothing is in flight. */
+  rotateTree: (tenantId: string) => http.post<{ status: string }>(`/api/tenants/${tenantId}/tree/rotate`),
+  /** Admin only. The incident is written to the audit log. */
+  resumeReleaseWorker: (tenantId: string, incident: string) =>
+    http.post<{ status: string }>(`/api/tenants/${tenantId}/release-worker/resume`, { incident }),
+
   overview: (tenantId: string) => http.get<Overview>(`/api/tenants/${tenantId}/overview`),
   contract: (tenantId: string) => http.get<Contract>(`/api/tenants/${tenantId}/contract`),
   audit: (tenantId: string) => http.get<Page<AuditEntry>>(`/api/tenants/${tenantId}/audit`),

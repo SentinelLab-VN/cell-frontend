@@ -23,5 +23,7 @@ export function currentStep(tenant: Tenant | undefined): StepId | "live" {
   if (!done?.mintConfirmed) return "asset";
   if (!done.operatorConfirmed) return "operator";
   if (!done.operatorFunded) return "fund";
+  // All four, not three: the indexer confirms the admin too.
+  if (!done.adminConfirmed) return "fund";
   return "live";
 }
