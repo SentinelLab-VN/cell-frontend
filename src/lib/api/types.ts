@@ -95,6 +95,23 @@ export interface TransferOutcome {
   transfer: { id: string; amount: string; toAddress: string; committedAt: string };
 }
 
+/** `202`: the commit outran the gateway's wait. The transfer is still in flight. */
+export interface TransferPending {
+  id: string;
+  status: "in_flight";
+  message: string;
+}
+
+export interface Transfer {
+  id: string;
+  channelId: string;
+  fromAddress: string;
+  toAddress: string;
+  amount: string;
+  nonce: number;
+  committedAt: string;
+}
+
 export interface AuditEntry {
   seq: number;
   actorAddress: string | null;

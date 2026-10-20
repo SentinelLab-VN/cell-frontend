@@ -76,11 +76,7 @@ export function AccountsPage() {
                   </span>
                 </Td>
                 <Td>
-                  {member.status === "pending" ? (
-                    <Pill tone="warn">Waiting for approval</Pill>
-                  ) : (
-                    <Pill tone={LABEL[member.label].tone}>{LABEL[member.label].text}</Pill>
-                  )}
+                  <Pill tone={LABEL[member.label].tone}>{LABEL[member.label].text}</Pill>
                 </Td>
                 <Td className="text-right text-[15px] text-muted-foreground">{timeAgo(member.lastLoginAt)}</Td>
                 <Td className="space-x-2 text-right">

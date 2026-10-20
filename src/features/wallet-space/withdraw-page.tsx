@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Page } from "@/components/layout/page";
 import { Button } from "@/components/ui/button";
@@ -33,40 +33,61 @@ export function WithdrawPage() {
     refetchInterval: CHAIN_POLL_MS,
   });
 
+  // The server picks the request id and the expiry; both are signed. Read up
+  // front so the form can show the real ceiling: what is spendable net of
+  // other pending requests, and the asset's per-withdrawal cap.
+  const context = useQuery({
+    queryKey: ["tenant", tenant.id, "withdrawal-context", selected?.channelId],
+    queryFn: () => moneyApi.withdrawalContext(tenant.id, selected!.channelId),
+    enabled: !!selected,
+    staleTime: 0,
+  });
+  const spendable = context.data?.spendable ?? selected?.amount ?? "0";
+  const cap = context.data?.releaseCap ?? null;
+
   const amount = selected ? parseAmount(amountText, selected.decimals) : null;
   const to = destination ?? session.address;
-  const affordable = !!selected && !!amount && isPositive(amount) && gte(selected.amount, amount);
+  const withinCap = !amount || cap === null || gte(cap, amount);
+  const affordable = !!selected && !!amount && isPositive(amount) && gte(spendable, amount) && withinCap;
+
+  // A signed request outlives a lost response. Resubmitting the same signature
+  // and request id replays rather than queues a second payout; a fresh context
+  // would do the opposite.
+  const signed = useRef<{ channelId: string; to: string; amount: string; body: Parameters<typeof moneyApi.requestWithdrawal>[2] } | null>(null);
 
   const request = useMutation({
     mutationFn: async () => {
       const channelId = selected!.channelId;
-      // The server picks the request id and the expiry; both are signed.
-      const [context, wallet] = await Promise.all([
-        moneyApi.withdrawalContext(tenant.id, channelId),
-        walletStore.require(),
-      ]);
-      if (context.withdrawalsBlocked) throw new Error("Withdrawals from this asset are paused.");
+      const previous = signed.current;
+      const reusable =
+        previous &&
+        previous.channelId === channelId &&
+        previous.to === to &&
+        previous.amount === amount &&
+        new Date(previous.body.expiresAt).getTime() > Date.now();
+      if (reusable) return moneyApi.requestWithdrawal(tenant.id, channelId, previous.body);
+      signed.current = null;
 
+      const ctx = context.data ?? (await moneyApi.withdrawalContext(tenant.id, channelId));
+      if (ctx.withdrawalsBlocked) throw new Error("Withdrawals from this asset are paused.");
+      const wallet = await walletStore.require();
       const signature = await wallet.signMessage(
         withdrawalMessage({
-          networkPassphrase: context.networkPassphrase,
+          networkPassphrase: ctx.networkPassphrase,
           channelId,
           from: session.address,
           to,
           amount: amount!,
-          requestId: context.requestId,
-          expiresAt: context.expiresAt,
+          requestId: ctx.requestId,
+          expiresAt: ctx.expiresAt,
         }),
       );
-      return moneyApi.requestWithdrawal(tenant.id, channelId, {
-        amount: amount!,
-        destination: to,
-        requestId: context.requestId,
-        expiresAt: context.expiresAt,
-        signature,
-      });
+      const body = { amount: amount!, destination: to, requestId: ctx.requestId, expiresAt: ctx.expiresAt, signature };
+      signed.current = { channelId, to, amount: amount!, body };
+      return moneyApi.requestWithdrawal(tenant.id, channelId, body);
     },
     onSuccess: () => {
+      signed.current = null;
       queryClient.invalidateQueries({ queryKey: ["tenant", tenant.id] });
       toast.success("Withdrawal requested");
       setAmountText("");
@@ -98,7 +119,15 @@ export function WithdrawPage() {
                   <AssetSelect balances={rows} value={selected.channelId} onChange={choose} show="channel" />
                 </Field>
               )}
-              <Field label="Amount">
+              <Field
+                label="Amount"
+                hint={
+                  selected &&
+                  (cap === null
+                    ? "No per-withdrawal cap on this asset."
+                    : `At most ${formatAmount(cap, selected.decimals)} ${selected.assetCode} per withdrawal.`)
+                }
+              >
                 <Input
                   size="big"
                   name="amount"
@@ -109,9 +138,9 @@ export function WithdrawPage() {
                       <button
                         type="button"
                         className="cursor-pointer"
-                        onClick={() => setAmountText(formatAmount(selected.amount, selected.decimals).replace(/,/g, ""))}
+                        onClick={() => setAmountText(formatAmount(spendable, selected.decimals).replace(/,/g, ""))}
                       >
-                        {selected.assetCode} · max {formatAmount(selected.amount, selected.decimals)}
+                        {selected.assetCode} · max {formatAmount(spendable, selected.decimals)}
                       </button>
                     )
                   }
@@ -119,6 +148,11 @@ export function WithdrawPage() {
                   onChange={(event) => setAmountText(event.target.value)}
                 />
               </Field>
+              {context.data?.withdrawalsBlocked && (
+                <Note tone="danger" label="Withdrawals from this asset are paused">
+                  The operator has closed the gate on chain. Your balance is untouched; try again once it reopens.
+                </Note>
+              )}
               <Field label="Send to">
                 {destination === null ? (
                   <ReadOnlyBox
@@ -150,7 +184,7 @@ export function WithdrawPage() {
                 block
                 className="mt-auto"
                 loading={request.isPending}
-                disabled={!affordable || !isStellarAddress(to)}
+                disabled={!affordable || !isStellarAddress(to) || !!context.data?.withdrawalsBlocked}
               >
                 Request withdrawal
               </Button>
