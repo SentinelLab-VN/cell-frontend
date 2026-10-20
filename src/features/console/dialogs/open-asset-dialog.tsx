@@ -31,6 +31,7 @@ export function OpenAssetDialog({ tenantId, open, onOpenChange }: Props) {
     <Dialog
       open={open}
       onOpenChange={onOpenChange}
+      width={480}
       title="Open an asset"
       description="Tells the escrow to accept this asset. Each asset gets its own channel and its own books."
       footer={

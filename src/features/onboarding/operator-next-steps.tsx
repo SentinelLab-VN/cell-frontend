@@ -22,8 +22,8 @@ export function OperatorNextSteps({ hasDeposits }: { hasDeposits: boolean }) {
     <Card className="animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-[15px] font-semibold text-foreground">Your escrow is live. Three things next.</h2>
-          <p className="mt-1 text-[13px] text-muted-foreground">
+          <h2 className="text-[17px] font-semibold text-foreground">Your escrow is live. Three things next.</h2>
+          <p className="mt-1 text-[15px] text-muted-foreground">
             Nobody has deposited yet, so this is the moment to set the rules.
           </p>
         </div>
@@ -86,7 +86,7 @@ export function OperatorNextSteps({ hasDeposits }: { hasDeposits: boolean }) {
         </Step>
       </ol>
 
-      <p className="mt-4 text-[13px] text-muted-foreground">
+      <p className="mt-4 text-[15px] text-muted-foreground">
         The escrow pays out with the operator key Cell derives for this tenant — keep its account funded, and watch it
         on the Contract screen.
       </p>
@@ -102,7 +102,7 @@ function Step({ n, title, body, children }: { n: number; title: string; body: st
       </span>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-medium text-foreground">{title}</p>
-        <p className="mt-0.5 text-[13px] leading-relaxed text-muted-foreground">{body}</p>
+        <p className="mt-0.5 text-[15px] leading-relaxed text-muted-foreground">{body}</p>
       </div>
       <div className="ml-auto">{children}</div>
     </li>

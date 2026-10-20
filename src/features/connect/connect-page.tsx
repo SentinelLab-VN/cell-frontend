@@ -1,16 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
-import { ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { TopBar } from "@/components/layout/top-bar";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { NetworkPill } from "@/components/layout/wallet-chip";
 import { Field, Input, ReadOnlyBox } from "@/components/ui/field";
-import { ErrorState } from "@/components/ui/states";
 import { LAB_FUND } from "@/features/onboarding/faucet";
 import { signIn } from "@/features/session/sign-in";
 import { useSession } from "@/features/session/use-session";
-import { DEV_WALLET_ENABLED, devWallet, walletProviders, type WalletProvider } from "@/lib/wallet";
+import { devWallet, type WalletProvider } from "@/lib/wallet";
+import { ConnectHero } from "./connect-hero";
+import { ConnectWalletCard } from "./connect-wallet-card";
 import { RoleChooser, RoleGuide, type Role } from "./role-guide";
 
 const UUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
@@ -29,7 +28,6 @@ export function ConnectPage({ role }: { role?: Role }) {
   const session = useSession();
   const navigate = useNavigate();
   const location = useLocation();
-  const [devSecret, setDevSecret] = useState("");
   const [tenantRef, setTenantRef] = useState("");
 
   // RequireSession sends a visitor here with the path they tried to open.
@@ -56,114 +54,91 @@ export function ConnectPage({ role }: { role?: Role }) {
   if (session && !connect.isPending) return <Navigate to={destination} replace />;
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <TopBar right={<span className="num text-xs text-dim">Testnet</span>} />
-      <main className="mx-auto flex w-full max-w-[520px] flex-1 flex-col justify-center px-6 py-14">
+    <div className="relative flex min-h-screen flex-col overflow-hidden">
+      <TopBar right={<NetworkPill />} />
+
+      <div className="relative mx-auto grid w-full max-w-[1360px] flex-1 items-center gap-8 pt-8 pb-12 max-lg:content-start md:gap-10 md:pt-10 lg:grid-cols-[1fr_auto] lg:gap-12 lg:px-10 lg:py-12 xl:gap-20">
+        {/* Decorative mark anchored to the content column, not the window corner, so it stays near the copy on wide screens. */}
+        <img
+          src="/logo.png"
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute -bottom-28 -left-40 w-[560px] max-w-none opacity-5"
+        />
+
         {resolved ? (
           <>
-            <RoleGuide role={resolved} invited={invited} />
-
-            <Card className="mt-8 p-6">
-              {invitedTenant && (
-                <div className="mb-5">
-                  <p className="mb-2 text-[13px] text-muted-foreground">Channel</p>
-                  <ReadOnlyBox>{invitedTenant}</ReadOnlyBox>
-                </div>
-              )}
-              {needsTenant && (
-                <div className="mb-5">
-                  <Field
-                    label="Channel link or tenant ID"
-                    hint={
-                      tenantRef && !typedTenant
-                        ? "That does not look like a Cell link or tenant ID."
-                        : "Paste what the operator sent you. Leave it empty to sign in without a channel."
-                    }
-                  >
-                    <Input
-                      name="tenant"
-                      placeholder="https://…/t/… or 8f3a…"
-                      value={tenantRef}
-                      onChange={(event) => setTenantRef(event.target.value)}
-                    />
-                  </Field>
-                </div>
-              )}
-              <h2 className="text-[15px] font-semibold text-foreground">Connect your wallet</h2>
-              <ul className="mt-4 space-y-2">
-                {walletProviders.map((provider) => (
-                  <li key={provider.id}>
-                    <button
-                      type="button"
-                      disabled={provider.comingSoon || connect.isPending}
-                      onClick={() => connect.mutate(provider)}
-                      className="flex h-12 w-full items-center gap-3 rounded-[10px] border border-border bg-secondary/60 px-3.5 text-left transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      <span className="size-6 rounded-md bg-border-strong" aria-hidden />
-                      <span className="flex-1 text-sm font-medium text-foreground">{provider.name}</span>
-                      <span className="text-[11px] text-dim">{provider.comingSoon ? "Soon" : provider.hint}</span>
-                      <ChevronRight className="size-4 text-dim" aria-hidden />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-
-              {DEV_WALLET_ENABLED && (
-                <form
-                  className="mt-3 space-y-2 rounded-[10px] border border-dashed border-border-strong p-3.5"
-                  onSubmit={(event) => {
-                    event.preventDefault();
-                    connect.mutate({ devSecret });
-                  }}
-                >
-                  <p className="num text-[10px] tracking-[0.2em] text-warning uppercase">Development wallet</p>
-                  <Input
-                    type="password"
-                    name="dev-secret"
-                    aria-label="Secret seed"
-                    placeholder="S… secret seed — testnet keys only"
-                    value={devSecret}
-                    onChange={(event) => setDevSecret(event.target.value)}
-                  />
-                  <Button type="submit" variant="secondary" block loading={connect.isPending} disabled={!devSecret}>
-                    Connect with seed
-                  </Button>
-                </form>
-              )}
-
-              {connect.isError && (
-                <div className="mt-4">
-                  <ErrorState error={connect.error} />
-                </div>
-              )}
-            </Card>
-
-            <p className="mt-5 text-[13px] text-dim">
-              Signing in costs nothing. Transactions need a few test XLM from{" "}
-              <a
-                href={LAB_FUND}
-                target="_blank"
-                rel="noreferrer"
-                className="text-primary underline-offset-4 hover:underline"
+            <div className="relative px-5 lg:px-0">
+              <RoleGuide role={resolved} invited={invited} />
+            </div>
+            <div className="relative flex flex-col items-center px-5 lg:items-end lg:px-0">
+              <ConnectWalletCard
+                pending={connect.isPending}
+                hasError={connect.isError}
+                error={connect.error}
+                onConnect={(provider) => connect.mutate(provider)}
+                onConnectDev={(devSecret) => connect.mutate({ devSecret })}
               >
-                the faucet
-              </a>
-              .
-            </p>
+                {invitedTenant && (
+                  <div className="mb-6">
+                    <p className="mb-2 text-[15px] text-muted-foreground">Channel</p>
+                    <ReadOnlyBox>{invitedTenant}</ReadOnlyBox>
+                  </div>
+                )}
+                {needsTenant && (
+                  <div className="mb-6">
+                    <Field
+                      label="Channel link or tenant ID"
+                      hint={
+                        tenantRef && !typedTenant
+                          ? "That does not look like a Cell link or tenant ID."
+                          : "Paste what the operator sent you. Leave it empty to sign in without a channel."
+                      }
+                    >
+                      <Input
+                        name="tenant"
+                        placeholder="https://…/t/… or 8f3a…"
+                        value={tenantRef}
+                        onChange={(event) => setTenantRef(event.target.value)}
+                      />
+                    </Field>
+                  </div>
+                )}
+              </ConnectWalletCard>
+
+              <div className="mt-5 w-full max-w-[460px] max-lg:max-w-none">
+                <FaucetNote />
+              </div>
+            </div>
           </>
         ) : (
           <>
-            <p className="num text-xs tracking-[0.25em] text-primary uppercase">Cell</p>
-            <h1 className="mt-4 text-[38px] leading-[1.15] font-semibold tracking-tight text-foreground">
-              Instant transfers, backed on Stellar.
-            </h1>
-            <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
-              Balances live in an escrow anyone can audit. Payments inside the channel are instant and private.
-            </p>
-            <RoleChooser />
+            <div className="relative px-5 lg:px-0">
+              <ConnectHero />
+            </div>
+            <div className="relative w-full px-5 lg:w-[460px] lg:px-0">
+              <RoleChooser />
+            </div>
           </>
         )}
-      </main>
+      </div>
     </div>
+  );
+}
+
+function FaucetNote() {
+  return (
+    <p className="text-[15px] text-muted-foreground">
+      Signing in costs nothing. Transactions need a few test XLM from{" "}
+      <a
+        href={LAB_FUND}
+        target="_blank"
+        rel="noreferrer"
+        className="text-primary-ink underline-offset-4 hover:underline"
+      >
+        the faucet
+      </a>
+      .
+    </p>
   );
 }

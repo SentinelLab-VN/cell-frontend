@@ -38,7 +38,7 @@ const GUIDES: Record<Role, Guide> = {
 /** The landing page's only question. */
 export function RoleChooser() {
   return (
-    <div className="mt-10 grid gap-3">
+    <div className="grid gap-4">
       <RoleCard to="/start/operator" icon={Layers} title="I run a channel" body="Set up an escrow and share it." />
       <RoleCard to="/start/member" icon={Link2} title="I was sent a link" body="Deposit, pay, withdraw." />
     </div>
@@ -59,16 +59,19 @@ function RoleCard({
   return (
     <Link
       to={to}
-      className="group flex items-center gap-4 rounded-2xl border border-border bg-card p-5 transition-colors hover:border-border-strong hover:bg-secondary/40 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+      className="group flex items-center gap-5 rounded-2xl border border-border bg-card p-6 shadow-sm transition-colors hover:border-border-strong hover:bg-secondary focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
     >
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-secondary">
-        <Icon className="size-[18px] text-primary" aria-hidden />
+      <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-primary-subtle-border bg-primary-subtle">
+        <Icon className="size-5 text-primary-ink" aria-hidden />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block text-[15px] font-semibold text-foreground">{title}</span>
-        <span className="block text-[13px] text-muted-foreground">{body}</span>
+        <span className="block text-lg font-semibold text-foreground">{title}</span>
+        <span className="mt-0.5 block text-[15px] text-muted-foreground">{body}</span>
       </span>
-      <ArrowRight className="size-4 text-dim transition-transform group-hover:translate-x-0.5" aria-hidden />
+      <ArrowRight
+        className="size-5 text-dim transition-transform group-hover:translate-x-1 group-hover:text-foreground motion-reduce:transition-none"
+        aria-hidden
+      />
     </Link>
   );
 }
@@ -79,19 +82,23 @@ export function RoleGuide({ role, invited = false }: { role: Role; invited?: boo
   return (
     <div>
       {!invited && (
-        <Link to="/" className="text-[13px] text-dim underline-offset-4 hover:text-foreground hover:underline">
+        <Link to="/" className="text-[15px] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">
           ← Not you? {guide.other.label}
         </Link>
       )}
-      <h1 className="mt-4 text-[30px] font-semibold tracking-tight text-foreground">{guide.title}</h1>
-      <p className="mt-2 text-[15px] text-muted-foreground">
+      <h1 className="mt-5 text-[36px] leading-[1.08] font-semibold tracking-[-0.03em] text-foreground md:text-[50px]">
+        {guide.title}
+      </h1>
+      <p className="mt-4 max-w-[540px] text-base leading-[1.65] text-muted-foreground">
         {invited ? "You were sent a link to a channel. Connect a wallet to open it." : guide.lede}
       </p>
 
-      <ol className="mt-7 space-y-3">
+      <ol className="mt-8 max-w-[540px] space-y-4">
         {guide.steps.map(({ title, body }, index) => (
-          <li key={title} className="flex gap-3.5 text-[14px]">
-            <span className="num w-4 shrink-0 text-primary">{index + 1}</span>
+          <li key={title} className="flex gap-3.5 text-base leading-[1.6]">
+            <span className="num mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary-subtle text-[13px] font-semibold text-primary-ink">
+              {index + 1}
+            </span>
             <span>
               <span className="font-medium text-foreground">{title}</span>
               <span className="text-muted-foreground"> — {body}</span>

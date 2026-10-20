@@ -1,8 +1,8 @@
-/* Cell Protocol — shadcn/ui theme (dark only).
+/* Cell Protocol — design tokens (Tailwind v4 + shadcn naming).
  *
- * Generated from design/cell-app.pen. shadcn's `--accent` is the hover/muted
- * surface, NOT a brand colour, so Cell's lime lives on `--primary` and the
- * shadcn `--accent` stays a neutral grey. Do not swap them.
+ * shadcn's `--accent` is the hover/muted surface, NOT a brand colour, so Cell's
+ * lime lives on `--primary` and `--accent` stays a neutral grey. Do not swap them.
+ * Dark is the default. Add `.light` to <html> for the light theme.
  */
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/jetbrains-mono";
@@ -17,7 +17,6 @@
 
   --background: #0A0B0D;
   --foreground: #EDEFF2;
-
   --card: #191D24;
   --card-foreground: #EDEFF2;
   --popover: #23272F;
@@ -26,30 +25,40 @@
   /* Cell lime. Foreground is near-black: never white on this. */
   --primary: #C8F94E;
   --primary-foreground: #0A0B0D;
+  --primary-hover: #D6FF6B;
+  --primary-ink: #C8F94E;           /* lime used AS text/icon on this ground */
+  --primary-subtle: #2E3A16;        /* tinted fill: active nav, role pills */
+  --primary-subtle-border: #4C5F1F;
 
   --secondary: #23272F;
   --secondary-foreground: #EDEFF2;
-
   --muted: #23272F;
   --muted-foreground: #9AA3B2;
-
-  --accent: #23272F;
+  --accent: #23272F;                /* neutral hover surface */
   --accent-foreground: #EDEFF2;
-
   --destructive: #F87171;
   --destructive-foreground: #0A0B0D;
 
   --border: #333A45;
+  --border-strong: #6B717C;
   --input: #6B717C;
   --ring: #C8F94E;
 
-  /* Not in shadcn's set — Cell adds these. */
   --success: #4ADE80;
   --warning: #FBBF24;
   --info: #60A5FA;
-  --dim: #7B8493;
-  --border-strong: #6B717C;
-  --primary-subtle: #2E3A16;
+  --dim: #7B8493;                   /* lowest text tier: ~4.5:1 on card */
+  --text-secondary: #C9CED6;
+  --row-hover: #1F232B;             /* a step above the card it sits on */
+
+  --success-subtle: #14291B;
+  --success-subtle-border: #1F4A2C;
+  --warning-subtle: #2E2410;
+  --warning-subtle-border: #5A4614;
+  --danger-subtle: #2E1616;
+  --danger-subtle-border: #5A2424;
+  --info-subtle: #14213A;
+  --info-subtle-border: #25406E;
 
   --chart-1: #C8F94E;
   --chart-2: #60A5FA;
@@ -57,14 +66,77 @@
   --chart-4: #FBBF24;
   --chart-5: #F87171;
 
-  --sidebar: #191D24;
+  --sidebar: #0D0E11;
   --sidebar-foreground: #EDEFF2;
   --sidebar-primary: #C8F94E;
   --sidebar-primary-foreground: #0A0B0D;
-  --sidebar-accent: #2E3A16;
-  --sidebar-accent-foreground: #C8F94E;
+  --sidebar-accent: #23272F;
+  --sidebar-accent-foreground: #EDEFF2;
   --sidebar-border: #333A45;
   --sidebar-ring: #C8F94E;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --shadow-lg: 0 24px 64px -16px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.light {
+  --background: #F6F7F9;
+  --foreground: #0F1115;
+  --card: #FFFFFF;
+  --card-foreground: #0F1115;
+  --popover: #FFFFFF;
+  --popover-foreground: #0F1115;
+
+  --primary: #C8F94E;
+  --primary-foreground: #0A0B0D;
+  --primary-hover: #D6FF6B;
+  --primary-ink: #5E7A12;           /* lime is too light as text on white */
+  --primary-subtle: #EEF7CF;
+  --primary-subtle-border: #D3E7A0;
+
+  --secondary: #EEF0F3;
+  --secondary-foreground: #0F1115;
+  --muted: #EEF0F3;
+  --muted-foreground: #5F6673;
+  --accent: #EEF0F3;
+  --accent-foreground: #0F1115;
+  --destructive: #DC2626;
+  --destructive-foreground: #FFFFFF;
+
+  --border: #E2E5EA;
+  --border-strong: #C9CED6;
+  --input: #E2E5EA;
+  --ring: #5E7A12;
+
+  --success: #15803D;
+  --warning: #B45309;
+  --info: #2563EB;
+  --dim: #6B7280;                   /* lowest text tier: still 4.5:1 on background */
+  --text-secondary: #3F4652;
+  --row-hover: #F0F2F5;
+
+  --success-subtle: #E6F6EC;
+  --success-subtle-border: #BFE5CC;
+  --warning-subtle: #FDF1DC;
+  --warning-subtle-border: #F3D9A6;
+  --danger-subtle: #FDE8E8;
+  --danger-subtle-border: #F5BDBD;
+  --info-subtle: #E6EEFC;
+  --info-subtle-border: #BFD2F5;
+
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #0F1115;
+  --sidebar-primary: #C8F94E;
+  --sidebar-primary-foreground: #0A0B0D;
+  --sidebar-accent: #EEF0F3;
+  --sidebar-accent-foreground: #0F1115;
+  --sidebar-border: #E2E5EA;
+  --sidebar-ring: #5E7A12;
+
+  --shadow-sm: 0 1px 2px rgba(15, 17, 21, 0.06);
+  --shadow-md: 0 8px 24px -8px rgba(15, 17, 21, 0.14), 0 0 0 1px rgba(15, 17, 21, 0.04);
+  --shadow-lg: 0 24px 64px -16px rgba(15, 17, 21, 0.22), 0 0 0 1px rgba(15, 17, 21, 0.05);
 }
 
 @theme inline {
@@ -76,6 +148,10 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-ink: var(--primary-ink);
+  --color-primary-subtle: var(--primary-subtle);
+  --color-primary-subtle-border: var(--primary-subtle-border);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -83,15 +159,25 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-info: var(--info);
   --color-dim: var(--dim);
-  --color-border-strong: var(--border-strong);
-  --color-primary-subtle: var(--primary-subtle);
+  --color-text-secondary: var(--text-secondary);
+  --color-row-hover: var(--row-hover);
+  --color-success-subtle: var(--success-subtle);
+  --color-success-subtle-border: var(--success-subtle-border);
+  --color-warning-subtle: var(--warning-subtle);
+  --color-warning-subtle-border: var(--warning-subtle-border);
+  --color-danger-subtle: var(--danger-subtle);
+  --color-danger-subtle-border: var(--danger-subtle-border);
+  --color-info-subtle: var(--info-subtle);
+  --color-info-subtle-border: var(--info-subtle-border);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -99,12 +185,36 @@
   --color-sidebar-accent: var(--sidebar-accent);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
   --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Type scale one step above Tailwind's defaults: the stock sizes read too small on this UI. */
+  --text-xs: 0.8125rem;   /* 13px */
+  --text-sm: 0.9375rem;   /* 15px */
+  --text-base: 1.0625rem; /* 17px */
+  --text-lg: 1.1875rem;   /* 19px */
+  --text-xl: 1.375rem;    /* 22px */
+  --text-2xl: 1.625rem;   /* 26px */
+
+  --radius-xs: 4px;
+  --radius-sm: calc(var(--radius) - 4px);   /* 6px  — skeleton, tags */
+  --radius-md: calc(var(--radius) - 2px);   /* 8px  — nav rows, sm buttons, menu items */
+  --radius-lg: var(--radius);               /* 10px — inputs, buttons, tiles */
+  --radius-xl: calc(var(--radius) + 2px);   /* 12px — notes, inset rows, switcher */
+  --radius-2xl: calc(var(--radius) + 6px);  /* 16px — cards, dialogs, tables */
+
+  --animate-pulse-soft: pulse-soft 1.4s ease-in-out infinite;
+  --animate-skeleton: pulse-soft 1.6s ease-in-out infinite;
+
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+  }
 }
 
 @layer base {
@@ -112,4 +222,9 @@
   body { @apply bg-background text-foreground; }
   /* Every amount, address, hash and nonce is mono and tabular. */
   .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+  /* Tailwind v4 leaves buttons on the default cursor; anything clickable here shows the hand. :where keeps it overridable. */
+  :where(button:not(:disabled), [role="button"]:not([aria-disabled="true"]), [role="tab"], [role="switch"], summary, label[for]) {
+    cursor: pointer;
+  }
 }

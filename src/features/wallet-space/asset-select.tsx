@@ -1,4 +1,5 @@
 import { ChevronDown } from "lucide-react";
+import { AssetTile } from "@/components/ui/asset-tile";
 import { formatAmount } from "@/lib/amount";
 import type { BalanceRow } from "@/lib/api/types";
 
@@ -10,15 +11,21 @@ interface AssetSelectProps {
   show: "channel" | "wallet";
 }
 
+/** Asset picker drawn as a 44px box; a transparent native select sits on top so keyboard and touch pickers keep working. */
 export function AssetSelect({ balances, value, onChange, show }: AssetSelectProps) {
+  const current = balances.find((row) => row.channelId === value) ?? balances[0];
   return (
-    <span className="relative block">
+    <span className="relative flex h-11 items-center gap-2.5 rounded-[10px] border border-border bg-background px-3.5 focus-within:border-primary">
+      {current && <AssetTile code={current.assetCode} size={26} />}
+      <span className="text-sm font-semibold text-foreground">{current?.assetCode}</span>
+      <span className="num ml-auto min-w-0 truncate text-xs text-muted-foreground">{current && caption(current, show)}</span>
+      <ChevronDown className="size-3.5 shrink-0 text-dim" aria-hidden />
       <select
         name="asset"
         aria-label="Asset"
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-[58px] w-full appearance-none rounded-[10px] border border-border bg-background pr-10 pl-4 text-sm font-medium text-foreground outline-none focus:ring-2 focus:ring-ring/30"
+        className="absolute inset-0 size-full cursor-pointer opacity-0"
       >
         {balances.map((row) => (
           <option key={row.channelId} value={row.channelId}>
@@ -26,7 +33,6 @@ export function AssetSelect({ balances, value, onChange, show }: AssetSelectProp
           </option>
         ))}
       </select>
-      <ChevronDown className="pointer-events-none absolute top-1/2 right-4 size-4 -translate-y-1/2 text-dim" aria-hidden />
     </span>
   );
 }

@@ -24,7 +24,7 @@ function ExistingTenantSetup({ tenantId }: { tenantId: string }) {
   const tenant = useTenant(tenantId, true);
 
   if (tenant.isPending) return <SetupLayout step="deploy" panel={<Skeleton className="h-72" />} />;
-  if (tenant.isError) return <SetupLayout step="deploy" panel={<ErrorState error={tenant.error} />} />;
+  if (tenant.isError) return <SetupLayout step="deploy" panel={<ErrorState error={tenant.error} title="Could not load this tenant" />} />;
 
   const step = currentStep(tenant.data);
   return <SetupLayout step={step} tenant={tenant.data} panel={<StepPanel step={step} tenant={tenant.data} />} />;
@@ -57,12 +57,12 @@ function SetupLayout({ step, panel, tenant, intro = false }: SetupLayoutProps) {
   return (
     <div className="min-h-screen">
       <TopBar right={<span className="num text-xs text-dim">{who}</span>} />
-      <div className="mx-auto grid w-full max-w-[1240px] gap-8 px-6 py-10 lg:grid-cols-[1.5fr_1fr]">
+      <div className="mx-auto grid w-full max-w-[1240px] gap-8 px-6 py-10 max-md:px-5 max-md:py-6 lg:grid-cols-[1.5fr_1fr]">
         <div>
           {intro && (
             <div className="mb-6">
-              <h1 className="text-[30px] font-semibold tracking-tight text-foreground">Create your tenant</h1>
-              <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
+              <h1 className="text-[34px] font-semibold tracking-[-0.025em] text-foreground max-md:text-[30px]">Create your tenant</h1>
+              <p className="mt-3 max-w-2xl text-[17px] leading-[1.6] text-muted-foreground">
                 A tenant is one escrow contract you own. Each asset you open inside it becomes a channel your users can
                 hold a balance in.
               </p>

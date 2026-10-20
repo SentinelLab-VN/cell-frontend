@@ -3,11 +3,16 @@ import { CHAIN_POLL_MS, keys } from "@/features/tenant/queries";
 import { operatorApi } from "@/lib/api/operator";
 import { tenantsApi } from "@/lib/api/tenants";
 
-export const useOverview = (tenantId: string) =>
+/**
+ * `poll: false` reads whatever the Overview page already fetched without
+ * scheduling its own refetches, so a passive consumer (the nav badge) adds no
+ * requests on pages that never showed the overview.
+ */
+export const useOverview = (tenantId: string, { poll = true } = {}) =>
   useQuery({
     queryKey: keys.overview(tenantId),
     queryFn: () => tenantsApi.overview(tenantId),
-    refetchInterval: CHAIN_POLL_MS,
+    refetchInterval: poll ? CHAIN_POLL_MS : false,
   });
 
 export const useContract = (tenantId: string) =>

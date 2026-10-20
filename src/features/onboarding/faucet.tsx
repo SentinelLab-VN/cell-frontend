@@ -31,7 +31,7 @@ export function FaucetButton({ address, size = "md" }: { address: string; size?:
         href={LAB_FUND}
         target="_blank"
         rel="noreferrer"
-        className="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+        className="inline-flex items-center gap-1.5 text-[15px] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
       >
         Stellar Lab faucet
         <ExternalLink className="size-3.5" aria-hidden />

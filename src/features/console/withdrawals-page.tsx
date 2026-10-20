@@ -1,9 +1,11 @@
+import { Inbox } from "lucide-react";
 import { useState } from "react";
 import { Page } from "@/components/layout/page";
 import { Button } from "@/components/ui/button";
 import { Pill, type Tone } from "@/components/ui/pill";
 import { EmptyState, ErrorState, Skeleton } from "@/components/ui/states";
-import { AddressText, AmountText } from "@/components/ui/text";
+import { TableWrap, Td, Th, THead, Tr } from "@/components/ui/table";
+import { AddressText, AmountText, CopyButton } from "@/components/ui/text";
 import { useBalanceAssets } from "./use-assets";
 import { useCurrentTenant } from "@/features/tenant/tenant-context";
 import type { QueueRow, WithdrawalStatus } from "@/lib/api/types";
@@ -21,6 +23,16 @@ const STATUS: Record<WithdrawalStatus, { label: string; tone: Tone }> = {
   cancelled: { label: "Cancelled", tone: "neutral" },
 };
 
+/** Address with its copy button; the full value stays in the tooltip. */
+function CopyableAddress({ address }: { address: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <AddressText address={address} className="text-[15px]" />
+      <CopyButton value={address} />
+    </span>
+  );
+}
+
 export function WithdrawalsPage() {
   const tenant = useCurrentTenant();
   const queue = useQueue(tenant.id);
@@ -31,46 +43,44 @@ export function WithdrawalsPage() {
 
   return (
     <Page title="Withdrawals" subtitle="Requests to leave the channel. Approving one debits the member and queues the payout.">
-      {queue.isPending && <Skeleton className="h-48" />}
+      {queue.isPending && <Skeleton className="h-64 rounded-2xl" />}
       {queue.isError && <ErrorState error={queue.error} />}
-      {queue.data && rows.length === 0 && <EmptyState title="No withdrawal requests yet" />}
+      {queue.data && rows.length === 0 && <EmptyState icon={<Inbox className="size-5" aria-hidden />} title="No withdrawal requests yet" />}
 
       {rows.length > 0 && (
-        <div className="overflow-hidden rounded-2xl border border-border bg-card">
-          <table className="w-full text-left">
-            <thead className="bg-secondary/60">
-              <tr className="num text-[10px] tracking-[0.2em] text-dim uppercase">
-                <th className="px-5 py-3 font-medium">Member</th>
-                <th className="px-5 py-3 font-medium">Pays to</th>
-                <th className="px-5 py-3 text-right font-medium">Amount</th>
-                <th className="px-5 py-3 font-medium">Status</th>
-                <th className="px-5 py-3 text-right font-medium">Requested</th>
-                <th className="px-5 py-3" />
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => {
-                const asset = assets.get(row.channelId);
-                return (
-                  <tr key={row.id} className="border-t border-border text-sm">
-                    <td className="px-5 py-3.5"><AddressText address={row.address} /></td>
-                    <td className="px-5 py-3.5"><AddressText address={row.destination} /></td>
-                    <td className="px-5 py-3.5 text-right">
-                      <AmountText units={row.amount} decimals={asset?.decimals ?? 7} code={asset?.assetCode} />
-                    </td>
-                    <td className="px-5 py-3.5"><Pill tone={STATUS[row.status].tone}>{STATUS[row.status].label}</Pill></td>
-                    <td className="px-5 py-3.5 text-right text-[13px] text-muted-foreground">{timeAgo(row.requestedAt)}</td>
-                    <td className="px-5 py-3.5 text-right">
-                      {row.status === "requested" && (
-                        <Button size="sm" variant="outline" onClick={() => setDeciding(row)}>Review</Button>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <TableWrap>
+          <THead>
+            <tr>
+              <Th>Member</Th>
+              <Th>Pays to</Th>
+              <Th className="text-right">Amount</Th>
+              <Th>Status</Th>
+              <Th className="text-right">Requested</Th>
+              <Th />
+            </tr>
+          </THead>
+          <tbody>
+            {rows.map((row) => {
+              const asset = assets.get(row.channelId);
+              return (
+                <Tr key={row.id}>
+                  <Td><CopyableAddress address={row.address} /></Td>
+                  <Td><CopyableAddress address={row.destination} /></Td>
+                  <Td className="text-right">
+                    <AmountText units={row.amount} decimals={asset?.decimals ?? 7} code={asset?.assetCode} />
+                  </Td>
+                  <Td><Pill tone={STATUS[row.status].tone}>{STATUS[row.status].label}</Pill></Td>
+                  <Td className="text-right text-[15px] text-muted-foreground">{timeAgo(row.requestedAt)}</Td>
+                  <Td className="text-right">
+                    {row.status === "requested" && (
+                      <Button size="sm" variant="outline" onClick={() => setDeciding(row)}>Review</Button>
+                    )}
+                  </Td>
+                </Tr>
+              );
+            })}
+          </tbody>
+        </TableWrap>
       )}
 
       {deciding && (

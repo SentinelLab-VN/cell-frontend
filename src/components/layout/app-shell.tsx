@@ -1,7 +1,9 @@
 import type { LucideIcon } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 import { cn } from "@/lib/cn";
+import { AppShellMobileHeader } from "./app-shell-mobile-header";
 import { Brand } from "./brand";
+import { MobileTabBar } from "./mobile-tab-bar";
 import { TenantSwitcher } from "./tenant-switcher";
 import { WalletChip } from "./wallet-chip";
 
@@ -10,6 +12,8 @@ export interface NavItem {
   label: string;
   icon: LucideIcon;
   end?: boolean;
+  /** Count shown as a warning pill, e.g. withdrawals waiting for review. Hidden when 0 or absent. */
+  badge?: number;
 }
 
 interface AppShellProps {
@@ -23,43 +27,54 @@ interface AppShellProps {
 
 export function AppShell({ tenantId, tenantName, roleLabel, isConsole, nav, context }: AppShellProps) {
   return (
-    <div className="flex h-screen">
-      <aside className="flex w-[236px] shrink-0 flex-col border-r border-border bg-sidebar px-4 py-6">
+    <div className="flex h-dvh max-md:flex-col">
+      <aside className="hidden w-[248px] shrink-0 flex-col border-r border-sidebar-border bg-sidebar px-3 pt-5 pb-4 md:flex">
         <div className="px-2">
-          <Brand />
+          <Brand size="sidebar" />
         </div>
 
-        <div className="mt-6">
+        <div className="mt-5">
           <TenantSwitcher tenantId={tenantId} name={tenantName} roleLabel={roleLabel} isConsole={isConsole} />
         </div>
 
-        <nav className="mt-6 flex-1 space-y-1">
-          {nav.map(({ to, label, icon: Icon, end }) => (
+        <nav className="mt-5 flex flex-col gap-0.5">
+          {nav.map(({ to, label, icon: Icon, end, badge }) => (
             <NavLink
               key={to}
               to={to}
               end={end}
               className={({ isActive }) =>
                 cn(
-                  "flex h-[37px] items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors",
+                  "flex h-9 items-center gap-2.5 rounded-lg px-3 text-sm font-medium transition-colors",
                   isActive
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                    ? "bg-secondary text-foreground shadow-[inset_2px_0_0_var(--primary)]"
+                    : "text-muted-foreground hover:bg-row-hover hover:text-foreground",
                 )
               }
             >
-              <Icon className="size-[17px]" aria-hidden />
-              {label}
+              <Icon className="size-4" aria-hidden />
+              <span className="flex-1">{label}</span>
+              {badge ? (
+                <span className="num flex h-[18px] min-w-[18px] items-center justify-center rounded-full border border-warning-subtle-border bg-warning-subtle px-1.5 text-[12px] font-semibold text-warning">
+                  {badge}
+                </span>
+              ) : null}
             </NavLink>
           ))}
         </nav>
 
-        <WalletChip variant="sidebar" />
+        <div className="mt-auto">
+          <WalletChip variant="sidebar" />
+        </div>
       </aside>
 
-      <main className="min-w-0 flex-1 overflow-y-auto">
+      <AppShellMobileHeader tenantId={tenantId} tenantName={tenantName} roleLabel={roleLabel} isConsole={isConsole} />
+
+      <main className="min-h-0 min-w-0 flex-1 overflow-y-auto">
         <Outlet context={context} />
       </main>
+
+      <MobileTabBar nav={nav} />
     </div>
   );
 }

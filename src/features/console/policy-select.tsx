@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { keys } from "@/features/tenant/queries";
 import { errorMessage } from "@/lib/error-message";
@@ -21,9 +22,11 @@ export function PolicySelect({ tenant }: { tenant: Tenant }) {
   });
 
   return (
+    <span className="relative inline-flex items-center">
     <select
       aria-label="Membership policy"
-      className="h-8 rounded-lg border border-border-strong bg-card px-2.5 text-[13px] text-foreground disabled:opacity-60"
+      // Native select stays for keyboard and mobile pickers; the chevron is drawn over it.
+      className="h-9 cursor-pointer appearance-none rounded-[10px] border border-border-strong bg-card pr-8 pl-3 text-[15px] text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-60"
       value={save.variables ?? tenant.membershipPolicy}
       disabled={tenant.role !== "admin" || save.isPending}
       onChange={(event) => save.mutate(event.target.value as MembershipPolicy)}
@@ -32,5 +35,7 @@ export function PolicySelect({ tenant }: { tenant: Tenant }) {
         <option key={value} value={value}>{label}</option>
       ))}
     </select>
+    <ChevronDown className="pointer-events-none absolute right-3 size-3.5 text-dim" aria-hidden />
+    </span>
   );
 }

@@ -30,6 +30,7 @@ export function TopUpDialog({ tenant, onClose }: { tenant: Tenant; onClose: () =
     <Dialog
       open
       onOpenChange={(open) => !open && onClose()}
+      width={480}
       title="Top up the operator account"
       description={`It pays the network fee of every payout and never holds members' money. Balance now: ${formatXlm(tenant.operatorBalance)}.`}
       footer={

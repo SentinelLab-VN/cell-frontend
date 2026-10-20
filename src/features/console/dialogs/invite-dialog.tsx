@@ -33,6 +33,7 @@ export function InviteDialog({ tenantId, open, onOpenChange }: Props) {
     <Dialog
       open={open}
       onOpenChange={onOpenChange}
+      width={480}
       title="Add an address"
       description="The address may sign in and hold a balance here straight away. Nothing is sent to it."
       footer={
