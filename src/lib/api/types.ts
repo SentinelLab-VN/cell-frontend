@@ -12,7 +12,8 @@ export type TenantRole = Schema["TenantRole"];
 export type ActivationState = Schema["ActivationState"];
 export type MembershipPolicy = Schema["MembershipPolicy"];
 export type Me = Schema["MeResponse"];
-export type Config = Schema["ConfigResponse"];
+/** `supportedAssets` is optional only until the schema is regenerated; the hook falls back to XLM and USDC. */
+export type Config = Schema["ConfigResponse"] & { supportedAssets?: string[] };
 
 export type Channel = Schema["ChannelResponse"];
 export type BalanceRow = Schema["BalanceRow"];
