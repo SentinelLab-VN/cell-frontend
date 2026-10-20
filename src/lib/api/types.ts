@@ -122,3 +122,18 @@ export interface AuditEntry {
   metadata: Record<string, unknown>;
   createdAt: string;
 }
+
+/** The caller's own referral code and its funnel (`/api/referrals/me`). */
+export interface Referral {
+  code: string;
+  /** Wallets that signed in through this code. */
+  signups: number;
+  /** Of those, wallets that have made a deposit. */
+  depositors: number;
+}
+
+export interface ReferralMember {
+  address: string;
+  attributedAt: string;
+  firstDepositAt: string | null;
+}

@@ -5,6 +5,7 @@ import { AuditPage } from "@/features/console/audit-page";
 import { ChannelsPage } from "@/features/console/channels-page";
 import { ConsoleLayout } from "@/features/console/console-layout";
 import { ContractPage } from "@/features/console/contract-page";
+import { InvitePage } from "@/features/console/invite-page";
 import { OverviewPage } from "@/features/console/overview-page";
 import { WithdrawalsPage } from "@/features/console/withdrawals-page";
 import { HomePage } from "@/features/home/home-page";
@@ -46,6 +47,7 @@ export const router = createBrowserRouter([
           { path: "channels", element: <ChannelsPage /> },
           { path: "withdrawals", element: <WithdrawalsPage /> },
           { path: "accounts", element: <AccountsPage /> },
+          { path: "invite", element: <InvitePage /> },
           { path: "contract", element: <ContractPage /> },
           { path: "audit", element: <AuditPage /> },
         ],

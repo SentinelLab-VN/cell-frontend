@@ -1,4 +1,4 @@
-import { FileText, Gauge, Inbox, Layers, ScrollText, Users } from "lucide-react";
+import { FileText, Gauge, Inbox, Layers, ScrollText, Share2, Users } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { AppShell, type NavItem } from "@/components/layout/app-shell";
 import { TenantLoader } from "@/features/tenant/tenant-layout";
@@ -10,6 +10,7 @@ const NAV: NavItem[] = [
   { to: "channels", label: "Channels", icon: Layers },
   { to: "withdrawals", label: "Withdrawals", icon: Inbox },
   { to: "accounts", label: "Accounts", icon: Users },
+  { to: "invite", label: "Invite", icon: Share2 },
   { to: "contract", label: "Contract", icon: FileText },
   { to: "audit", label: "Audit log", icon: ScrollText },
 ];
