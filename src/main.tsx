@@ -5,8 +5,11 @@ import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 import { Toaster } from "sonner";
 import { ApiError } from "@/lib/api/client";
+import { captureReferral } from "@/lib/referral";
 import { router } from "./router";
 import "./styles/globals.css";
+
+captureReferral();
 
 // @stellar/stellar-sdk expects Node's Buffer to exist.
 (globalThis as { Buffer?: typeof Buffer }).Buffer ??= Buffer;
