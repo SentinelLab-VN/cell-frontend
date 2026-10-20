@@ -1,5 +1,5 @@
 import { http, type Page } from "./client";
-import type { MemberRow, QueueRow, Withdrawal } from "./types";
+import type { Leaderboard, MemberRow, QueueRow, Withdrawal } from "./types";
 
 /**
  * The operator console's write routes. A decision's idempotency key is fixed
@@ -14,6 +14,8 @@ export const operatorApi = {
     http.post<Withdrawal>(`/api/tenants/${tenantId}/queue/${withdrawalId}/approve`, {}, `approve:${withdrawalId}`),
   reject: (tenantId: string, withdrawalId: string, reason: string) =>
     http.post<Withdrawal>(`/api/tenants/${tenantId}/queue/${withdrawalId}/reject`, { reason }, `reject:${withdrawalId}`),
+
+  leaderboard: (tenantId: string) => http.get<Leaderboard>(`/api/tenants/${tenantId}/leaderboard`),
 
   members: (tenantId: string) => http.get<MemberRow[]>(`/api/tenants/${tenantId}/members`),
   invite: (tenantId: string, address: string, label?: string) =>

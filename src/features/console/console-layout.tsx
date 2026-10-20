@@ -10,7 +10,7 @@ const NAV: NavItem[] = [
   { to: "channels", label: "Channels", icon: Layers },
   { to: "withdrawals", label: "Withdrawals", icon: Inbox },
   { to: "accounts", label: "Accounts", icon: Users },
-  { to: "invite", label: "Invite", icon: Share2 },
+  { to: "referrals", label: "Referrals", icon: Share2 },
   { to: "contract", label: "Contract", icon: FileText },
   { to: "audit", label: "Audit log", icon: ScrollText },
 ];

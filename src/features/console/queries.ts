@@ -42,5 +42,5 @@ export function useRefreshTenant(tenantId: string) {
 // The referral code belongs to the wallet, not the tenant: no tenant prefix.
 export const useMyReferral = () => useQuery({ queryKey: keys.referral, queryFn: referralApi.mine });
 
-export const useMyReferralMembers = (enabled: boolean) =>
-  useQuery({ queryKey: keys.referralMembers, queryFn: referralApi.members, enabled });
+export const useLeaderboard = (tenantId: string) =>
+  useQuery({ queryKey: keys.leaderboard(tenantId), queryFn: () => operatorApi.leaderboard(tenantId) });
