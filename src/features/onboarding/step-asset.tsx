@@ -1,5 +1,6 @@
 import { Card, CardTitle } from "@/components/ui/card";
 import { Field, Input, ReadOnlyBox } from "@/components/ui/field";
+import { AssetPicker } from "@/features/chain/asset-picker";
 import { Note } from "@/components/ui/note";
 import { ErrorState } from "@/components/ui/states";
 import { useOpenAsset } from "@/features/chain/use-open-asset";
@@ -8,7 +9,8 @@ import { shortAddress } from "@/lib/format";
 import { ChainButton } from "./chain-button";
 
 export function StepAsset({ tenant }: { tenant: Tenant }) {
-  const { assetText, setAssetText, capText, setCapText, asset, valid, open } = useOpenAsset(tenant.id, "XLM");
+  const form = useOpenAsset(tenant.id, "XLM");
+  const { capText, setCapText, asset, valid, open } = form;
 
   return (
     <>
@@ -21,14 +23,15 @@ export function StepAsset({ tenant }: { tenant: Tenant }) {
             open.mutate();
           }}
         >
-          <Field label="Asset" hint="XLM, or CODE:ISSUER for an issued asset such as USDC.">
-            <Input
-              name="asset"
-              value={assetText}
-              onChange={(event) => setAssetText(event.target.value)}
-              disabled={open.isPending || open.isSuccess}
-            />
-          </Field>
+          <AssetPicker
+            assets={form.assets}
+            code={form.code}
+            onCode={form.setCode}
+            issuer={form.issuer}
+            onIssuer={form.setIssuer}
+            needsIssuer={form.needsIssuer}
+            disabled={open.isPending || open.isSuccess}
+          />
           <Field label="Token contract (SAC)">
             <ReadOnlyBox trailing={asset ? "Resolved" : undefined}>
               {asset ? shortAddress(asset.tokenContractId) : "—"}
