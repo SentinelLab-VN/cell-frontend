@@ -27,3 +27,11 @@ export function clearReferral() {
     // nothing to clear
   }
 }
+
+/**
+ * The link an inviter shares. It lands in the tenant, so the visitor is a
+ * member by definition (see ConnectPage), and `?ref=` is captured on arrival.
+ */
+export function referralLink(tenantId: string, code: string, origin: string = window.location.origin): string {
+  return `${origin}/t/${tenantId}?ref=${encodeURIComponent(code)}`;
+}

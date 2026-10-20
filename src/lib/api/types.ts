@@ -122,3 +122,53 @@ export interface AuditEntry {
   metadata: Record<string, unknown>;
   createdAt: string;
 }
+
+/** The caller's own referral code and its funnel (`/api/referrals/me`). */
+export interface Referral {
+  code: string;
+  /** Wallets that signed in through this code. */
+  signups: number;
+  /** Of those, wallets that have made a deposit. */
+  depositors: number;
+}
+
+export interface ReferralMember {
+  address: string;
+  attributedAt: string;
+  firstDepositAt: string | null;
+}
+
+/** One asset's share of a wallet's activity; assets are never summed across each other. */
+export interface AssetVolume {
+  assetCode: string;
+  decimals: number;
+  deposited: string;
+  sent: string;
+  received: string;
+}
+
+export interface AssetAmount {
+  assetCode: string;
+  decimals: number;
+  amount: string;
+}
+
+export interface ReferrerEntry {
+  address: string;
+  code: string;
+  signups: number;
+  depositors: number;
+  referred: AssetAmount[];
+}
+
+export interface VolumeEntry {
+  address: string;
+  volume: AssetVolume[];
+}
+
+export interface Leaderboard {
+  /** The assets the product supports, in column order. */
+  assets: string[];
+  referrers: ReferrerEntry[];
+  members: VolumeEntry[];
+}

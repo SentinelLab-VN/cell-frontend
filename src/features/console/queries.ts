@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CHAIN_POLL_MS, keys } from "@/features/tenant/queries";
+import { referralApi } from "@/lib/api/auth";
 import { operatorApi } from "@/lib/api/operator";
 import { tenantsApi } from "@/lib/api/tenants";
 
@@ -37,3 +38,9 @@ export function useRefreshTenant(tenantId: string) {
   const queryClient = useQueryClient();
   return () => queryClient.invalidateQueries({ queryKey: ["tenant", tenantId] });
 }
+
+// The referral code belongs to the wallet, not the tenant: no tenant prefix.
+export const useMyReferral = () => useQuery({ queryKey: keys.referral, queryFn: referralApi.mine });
+
+export const useLeaderboard = (tenantId: string) =>
+  useQuery({ queryKey: keys.leaderboard(tenantId), queryFn: () => operatorApi.leaderboard(tenantId) });

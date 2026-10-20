@@ -17,6 +17,8 @@ export const keys = {
   queue: (id: string) => ["tenant", id, "queue"] as const,
   members: (id: string) => ["tenant", id, "members"] as const,
   audit: (id: string) => ["tenant", id, "audit"] as const,
+  leaderboard: (id: string) => ["tenant", id, "leaderboard"] as const,
+  referral: ["referral", "me"] as const,
 };
 
 /** What arrives from the chain shows up through the indexer, a few seconds later: those screens poll. */
