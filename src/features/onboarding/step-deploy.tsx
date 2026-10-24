@@ -9,8 +9,11 @@ import { ErrorState } from "@/components/ui/states";
 import { useRequiredSession } from "@/features/session/use-session";
 import { walletStore } from "@/features/session/wallet-store";
 import { keys } from "@/features/tenant/queries";
+import { ApiError } from "@/lib/api/client";
 import { tenantsApi } from "@/lib/api/tenants";
 import { shortAddress } from "@/lib/format";
+import { FaucetButton } from "./faucet";
+import { useIsTestnet } from "./helpers";
 
 const RETRY_MS = 4000;
 const RETRIES = 12;
@@ -19,6 +22,7 @@ export function StepDeploy() {
   const session = useRequiredSession();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const testnet = useIsTestnet();
   const [name, setName] = useState("");
 
   const deploy = useMutation({
@@ -75,6 +79,8 @@ export function StepDeploy() {
           </Field>
 
           {deploy.isError && <ErrorState error={deploy.error} />}
+          {/* The wallet pays for the deployment, so one that has never been funded cannot start. On testnet the fix is a click. */}
+          {deploy.isError && testnet && isUnfunded(deploy.error) && <FaucetButton address={session.address} />}
 
           <Button type="submit" size="lg" block loading={deploy.isPending} disabled={!name.trim()}>
             {deploy.isPending ? "Deploying on chain…" : "Sign & deploy escrow"}
@@ -90,3 +96,5 @@ export function StepDeploy() {
     </>
   );
 }
+
+const isUnfunded = (error: unknown) => error instanceof ApiError && error.code === "account_not_funded";
